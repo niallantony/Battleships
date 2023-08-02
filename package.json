@@ -1,0 +1,16 @@
+{
+  "name": "battleships",
+  "version": "1.0.0",
+  "description": "A battleships game",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Niall Craven",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
