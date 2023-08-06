@@ -1,6 +1,6 @@
 export const Gameboard = (size) => {
     const ships = [];
-    let hitSquares = 0;
+    const turns = [];
     const Square = (y,x) => {
         return {
             ship: null,
@@ -36,9 +36,9 @@ export const Gameboard = (size) => {
     const gameSquare = buildSquare(size);
 
     const hitSquare = (x,y) => {
-        if (gameSquare[y][x].hit) throw new Error("Square already hit");
+        if (gameSquare[x][y].hit) throw new Error("Square already hit");
         gameSquare[x][y].hit = true;
-        hitSquares++;
+        turns.push([x,y]);
         if (gameSquare[y][x].ship) {
             gameSquare[y][x].ship.hit();
             return gameSquare[y][x].ship;
@@ -47,8 +47,23 @@ export const Gameboard = (size) => {
         }
     }
 
+    
+    const playTile = (tile) => {
+        if (!tile) return;
+        try {
+            const hit = hitSquare(tile[0],tile[1]);
+            if (hit === true) {
+                return 'miss';
+            } else {
+                return 'hit';
+            }
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
     const checkForEmpty = () => {
-        if (hitSquares < (size*size)) return true;
+        if (turns.length < (size*size)) return true;
         return false;
     }
 
@@ -101,24 +116,6 @@ export const Gameboard = (size) => {
         return allCondition.every(condition => condition === true);
     }
 
-    const displayConsoleTEMP = () => {
-        const output = [];
-        gameSquare.forEach((row) => {
-            const stringArray = [];
-            row.forEach((square) => {
-                stringArray.push(square.hit ? 'X' : square.ship ? 'O' : '.')
-            })
-            stringArray.push('\n');
-            output.push(stringArray.join('|'));
-            const divider = [];
-            for (let i = 0n ; i < row.length ; i++ ) {
-                divider.push('_');
-            }
-            divider.push('\n');
-            output.push(divider.join('_'));
-        })
-        console.log(output.join(''));
-    }
 
     return {
         getLength,
@@ -128,7 +125,8 @@ export const Gameboard = (size) => {
         checkForAllSunk,
         getSquare,
         checkForEmpty,
-        displayConsoleTEMP
+        playTile,
+        owner:null,
     }
 
 };

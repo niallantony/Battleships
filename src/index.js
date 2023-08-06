@@ -3,11 +3,13 @@ import { Gameboard } from "./modules/gameboard.js";
 import { Player , Computer } from "./modules/player.js";
 import Screen from "./modules/screen.js";
 
-const Game = (() => {
+export const Game = (() => {
     const playerBoard = Gameboard(10);
     const compBoard = Gameboard(10);
-    const playerOne = Player(compBoard);
-    const compPlayer = Computer(playerBoard);
+    const playerOne = Player("right",compBoard);
+    const compPlayer = Computer("left",playerBoard);
+    playerBoard.owner = playerOne;
+    compBoard.owner = compPlayer;
 
     const playerTanker = Ship(5);
     const playerDestroyer = Ship(3);
@@ -25,31 +27,11 @@ const Game = (() => {
     compBoard.placeShip(computerDestroyer,5,6,false);
     compBoard.placeShip(computerCruiser,0,0,true);
 
-    Screen.drawBoard("left",playerBoard);
-    Screen.drawBoard("right",compBoard);
+    Screen.drawBoard("right",playerOne);
+    Screen.drawBoard("left",compPlayer);
     Screen.drawShip("left",playerTanker);
     Screen.drawShip("left",playerDestroyer);
     Screen.drawShip("left",playerCruiser);
-    Screen.drawShip("right",computerTanker);
-    Screen.drawShip("right",computerDestroyer);
-    Screen.drawShip("right",computerCruiser);
-    Screen.consoleNodes();
-    
-
-
-    // while (!playerBoard.checkForAllSunk() && !compBoard.checkForAllSunk()) {
-    //     let playersFinished = false;
-    //     do {
-    //         playersFinished = playerOne.getMove();
-    //     } while (!playersFinished);
-    //     compBoard.displayConsoleTEMP();
-
-    //     if (compBoard.checkForAllSunk()) break;
-
-    //     compPlayer.makeMove();
-    //     playerBoard.displayConsoleTEMP();
-
-    //     console.log("Turn over")
-    // }
+    Screen.consoleNodes(); 
 
 })();

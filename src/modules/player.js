@@ -1,29 +1,33 @@
+import Screen from "./screen.js";
 
+export const Player = (id,gameboard) => {
 
-export const Player = (gameboard) => {
-
-    const getMove = () => {
-        const playerX = prompt("X coordinate");
-        const playerY = prompt("Y coordinate");
-        return tryMove([playerX,playerY]);
+    const makeMove = (tile) => {
+        const result = gameboard.playTile(tile);
+        if (!result) return
+        Screen.drawTurn(id,result,tile[0],tile[1])
+        changePlayer();
     }
 
-    const tryMove = (coords) => {
-        try {
-            return gameboard.hitSquare(coords[0],coords[1]);
-        } catch (error) {
-            return false;
+    const changePlayer = () => {
+        if (gameboard.checkForAllSunk()) {
+            Screen.endGame();
+            return;
         }
+        gameboard.owner.makeMove();
     }
+
 
     return {
-        getMove,
-        tryMove
+        playing: false,
+        id,
+        gameboard,
+        makeMove
     }
 
 }
 
-export const Computer = (gameboard) => {
+export const Computer = (id,gameboard) => {
 
     const generateRandomCoords = () => {
         const boundary = gameboard.getLength();
@@ -33,11 +37,9 @@ export const Computer = (gameboard) => {
     }
 
     const tryMove = (coords) => {
-        try {
-            return gameboard.hitSquare(coords[0],coords[1]);
-        } catch(error) {
-            return false
-        }
+            const result = gameboard.playTile(coords);
+            if (result) Screen.drawTurn(id,result,coords[0],coords[1]);
+            return result;
     }
 
     const makeMove = () => {
@@ -48,10 +50,16 @@ export const Computer = (gameboard) => {
         while (!moveTaken) {
             moveTaken = tryMove(generateRandomCoords());
         }
+        if (gameboard.checkForAllSunk()) {
+            Screen.endGame();
+            return;
+        }
         return moveTaken;
     }
 
     return {
+        id,
+        gameboard,
         generateRandomCoords,
         tryMove,
         makeMove

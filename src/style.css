@@ -7,17 +7,25 @@ body {
     justify-content: center;
 }
 
-#left-zone .ship {
+#left .ship {
     background-color: blue;
 }
 
-#right-zone .ship {
+#right .ship {
     background-color: red;
 }
 
-#left-zone,
-#right-zone {
+#left,
+#right {
     margin: 2rem;
+}
+
+.miss {
+    background-color: aquamarine;
+}
+
+.hit {
+    background-color: red;
 }
 
 .row {
