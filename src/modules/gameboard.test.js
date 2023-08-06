@@ -6,33 +6,29 @@ const biggerBoard = Gameboard(20);
 
 describe("Testing initialisation of the game square", () => {
 
-    test("Returns an array", () => {
-        expect(testBoard.gameSquare).toBeInstanceOf(Array);
-    })
-
     test("Returns an board with 10 rows", () => {
-        expect(testBoard.gameSquare.length).toBe(10);
+        expect(testBoard.getSquare(0,9)).toBeDefined();
     })
 
     test("Returns a board with 10 rows, each of length 10", () => {
-        expect(testBoard.gameSquare[0].length).toBe(10);
-        expect(testBoard.gameSquare[5].length).toBe(10);
-        expect(testBoard.gameSquare[9].length).toBe(10);
+        expect(testBoard.getSquare(0,9)).toBeDefined();
+        expect(testBoard.getSquare(5,9)).toBeDefined();
+        expect(testBoard.getSquare(9,9)).toBeDefined();
     })
 
     test("Board dimensions can be set", () => {
-        expect(biggerBoard.gameSquare[0].length).toBe(20);
-        expect(biggerBoard.gameSquare[6].length).toBe(20);
-        expect(biggerBoard.gameSquare[13].length).toBe(20);
+        expect(biggerBoard.getSquare(0,19)).toBeDefined();
+        expect(biggerBoard.getSquare(11,19)).toBeDefined();
+        expect(biggerBoard.getSquare(19,19)).toBeDefined();
     })
 
     test("Array is populated with squares", () => {
-        expect(testBoard.gameSquare[0][0].ship).toBeDefined();
-        expect(testBoard.gameSquare[0][0].hit).toBeDefined();
-        expect(testBoard.gameSquare[0][0].coords).toEqual([0,0]);
-        expect(testBoard.gameSquare[3][6].ship).toBeDefined();
-        expect(testBoard.gameSquare[3][6].hit).toBeDefined();
-        expect(testBoard.gameSquare[3][6].coords).toEqual([3,6]);
+        expect(testBoard.getSquare(0,0).ship).toBeDefined();
+        expect(testBoard.getSquare(0,0).hit).toBeDefined();
+        expect(testBoard.getSquare(0,0).coords).toEqual([0,0]);
+        expect(testBoard.getSquare(3,3).ship).toBeDefined();
+        expect(testBoard.getSquare(3,3).hit).toBeDefined();
+        expect(testBoard.getSquare(3,6).coords).toEqual([3,6]);
     })
 
 })
@@ -44,7 +40,7 @@ describe("Test hit methods of the gameboard", () => {
     })
 
     test("Hit square registers as hit", () => {
-        expect(testBoard.gameSquare[4][4].hit).toBe(true);
+        expect(testBoard.getSquare(4,4).hit).toBe(true);
     })
 
     test("Cannot hit same square twice", () => {
@@ -75,9 +71,9 @@ describe("Test hit methods of the gameboard", () => {
         })
 
         test("Ship's methods are accessible", () => {
-            expect(() => testBoard.gameSquare[2][2].ship.hit()).toBeDefined();
-            expect(() => testBoard.gameSquare[2][2].ship.length).toBeDefined();
-            expect(() => testBoard.gameSquare[2][2].ship.isSunk()).toBeDefined();
+            expect(() => testBoard.getSquare(2,2).ship.hit()).toBeDefined();
+            expect(() => testBoard.getSquare(2,2).ship.length).toBeDefined();
+            expect(() => testBoard.getSquare(2,2).ship.isSunk()).toBeDefined();
         })
 
         test("Can hit a ship through hitting a square", () => {
@@ -129,16 +125,16 @@ describe("Test placements of ship", () => {
     });
 
     test("Ship is sitting in origin square", () => {
-        expect(testBoard.gameSquare[2][2].ship).toBeInstanceOf(Object);
-        expect(testBoard.gameSquare[2][2].ship).toMatchObject(testShip);
+        expect(testBoard.getSquare(2,2).ship).toBeInstanceOf(Object);
+        expect(testBoard.getSquare(2,2).ship).toMatchObject(testShip);
     })
 
 
     test("Ship is sitting in all squares", () => {
-        expect(testBoard.gameSquare[2][2].ship).toMatchObject(testShip);
-        expect(testBoard.gameSquare[2][3].ship).toMatchObject(testShip);
-        expect(testBoard.gameSquare[2][4].ship).toMatchObject(testShip);
-        expect(testBoard.gameSquare[2][5].ship).toMatchObject(testShip);
+        expect(testBoard.getSquare(2,2).ship).toMatchObject(testShip);
+        expect(testBoard.getSquare(2,3).ship).toMatchObject(testShip);
+        expect(testBoard.getSquare(2,4).ship).toMatchObject(testShip);
+        expect(testBoard.getSquare(2,5).ship).toMatchObject(testShip);
     })
 
     test("Ship has position logged", () => {
@@ -147,29 +143,12 @@ describe("Test placements of ship", () => {
 
     test("Clear ship clears the ship in question", () => {
         testBoard.clearShip(testShip);
-        expect(testBoard.gameSquare[2][2].ship).toBe(null);
-        expect(testBoard.gameSquare[2][3].ship).toBe(null);
-        expect(testBoard.gameSquare[2][4].ship).toBe(null);
-        expect(testBoard.gameSquare[2][5].ship).toBe(null);
+        expect(testBoard.getSquare(2,2).ship).toBe(null);
+        expect(testBoard.getSquare(2,3).ship).toBe(null);
+        expect(testBoard.getSquare(2,4).ship).toBe(null);
+        expect(testBoard.getSquare(2,5).ship).toBe(null);
         //Place it again so the afterEach can remove it
         testBoard.placeShip(testShip,2,2,true);
-    })
-
-    test("Ship array contains ships", () => {
-        expect(testBoard.ships).toEqual([testShip]);
-        const anotherShip = {
-            length:2,
-            position:[]
-        };
-        testBoard.placeShip(anotherShip,5,6,false);
-        expect(testBoard.ships).toEqual([testShip,anotherShip]);
-    })
-
-    test("Ship array changes when ship removed", () => {
-        const anotherShip = testBoard.ships[0];
-        expect(testBoard.ships[1]).toBe(testShip);
-        testBoard.clearShip(anotherShip);
-        expect(testBoard.ships).toEqual([testShip]);
     })
 
     test("Unable to place a ship out of bounds horizontally", () => {
@@ -189,6 +168,8 @@ describe("Test placements of ship", () => {
 describe("Methods affecting overall board and gameplay",() => {
 
     const gameBoard = Gameboard(10);
+
+    const smallGameBoard = Gameboard(3);
 
     const mockIsSunk = jest.fn()
     mockIsSunk.mockReturnValue(true);
@@ -228,8 +209,23 @@ describe("Methods affecting overall board and gameplay",() => {
     })
 
     test("Checks to see if all ships are sunk",() => {
-        expect(gameBoard.ships.length).toBe(5);
         expect(gameBoard.checkForAllSunk()).toBe(true);
     })
+
+    test("Checks to see if there are any empty squares",() => {
+        expect(smallGameBoard.checkForEmpty()).toBe(true);
+        smallGameBoard.hitSquare(0,0);
+        smallGameBoard.hitSquare(0,1);
+        smallGameBoard.hitSquare(0,2);
+        smallGameBoard.hitSquare(1,0);
+        smallGameBoard.hitSquare(1,1);
+        smallGameBoard.hitSquare(1,2);
+        smallGameBoard.hitSquare(2,0);
+        expect(smallGameBoard.checkForEmpty()).toBe(true);
+        smallGameBoard.hitSquare(2,1);
+        expect(smallGameBoard.checkForEmpty()).toBe(true);
+        smallGameBoard.hitSquare(2,2);
+        expect(smallGameBoard.checkForEmpty()).toBe(false);
+    } )
 
 })

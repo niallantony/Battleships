@@ -1,6 +1,6 @@
 export const Gameboard = (size) => {
-    const squares = [];
     const ships = [];
+    let hitSquares = 0;
     const Square = (y,x) => {
         return {
             ship: null,
@@ -25,15 +25,29 @@ export const Gameboard = (size) => {
         return rows;
     }
 
+    const getLength = () => {
+        return size;
+    }
+
+    const getSquare = (x,y) => {
+        return gameSquare[x][y];
+    }
+
     const gameSquare = buildSquare(size);
 
     const hitSquare = (x,y) => {
         if (gameSquare[x][y].hit) throw new Error("Square already hit");
         gameSquare[x][y].hit = true;
+        hitSquares++;
         if (gameSquare[x][y].ship) {
             gameSquare[x][y].ship.hit();
             if (gameSquare[x][y].ship.isSunk()) return true;
         }
+    }
+
+    const checkForEmpty = () => {
+        if (hitSquares < (size*size)) return true;
+        return false;
     }
 
     const placeShip = (ship,x,y,horizontal) => {
@@ -86,12 +100,13 @@ export const Gameboard = (size) => {
     }
 
     return {
-        gameSquare,
-        ships,
+        getLength,
         hitSquare,
         placeShip,
         clearShip,
         checkForAllSunk,
+        getSquare,
+        checkForEmpty,
     }
 
 };
