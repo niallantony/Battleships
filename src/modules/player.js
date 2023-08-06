@@ -1,6 +1,25 @@
 
 
-export const Player = () => {
+export const Player = (gameboard) => {
+
+    const getMove = () => {
+        const playerX = prompt("X coordinate");
+        const playerY = prompt("Y coordinate");
+        return tryMove([playerX,playerY]);
+    }
+
+    const tryMove = (coords) => {
+        try {
+            return gameboard.hitSquare(coords[0],coords[1]);
+        } catch (error) {
+            return false;
+        }
+    }
+
+    return {
+        getMove,
+        tryMove
+    }
 
 }
 

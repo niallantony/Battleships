@@ -36,12 +36,12 @@ export const Gameboard = (size) => {
     const gameSquare = buildSquare(size);
 
     const hitSquare = (x,y) => {
-        if (gameSquare[x][y].hit) throw new Error("Square already hit");
+        if (gameSquare[y][x].hit) throw new Error("Square already hit");
         gameSquare[x][y].hit = true;
         hitSquares++;
-        if (gameSquare[x][y].ship) {
-            gameSquare[x][y].ship.hit();
-            return gameSquare[x][y].ship;
+        if (gameSquare[y][x].ship) {
+            gameSquare[y][x].ship.hit();
+            return gameSquare[y][x].ship;
         } else {
             return true;
         }
@@ -101,6 +101,25 @@ export const Gameboard = (size) => {
         return allCondition.every(condition => condition === true);
     }
 
+    const displayConsoleTEMP = () => {
+        const output = [];
+        gameSquare.forEach((row) => {
+            const stringArray = [];
+            row.forEach((square) => {
+                stringArray.push(square.hit ? 'X' : square.ship ? 'O' : '.')
+            })
+            stringArray.push('\n');
+            output.push(stringArray.join('|'));
+            const divider = [];
+            for (let i = 0n ; i < row.length ; i++ ) {
+                divider.push('_');
+            }
+            divider.push('\n');
+            output.push(divider.join('_'));
+        })
+        console.log(output.join(''));
+    }
+
     return {
         getLength,
         hitSquare,
@@ -109,6 +128,7 @@ export const Gameboard = (size) => {
         checkForAllSunk,
         getSquare,
         checkForEmpty,
+        displayConsoleTEMP
     }
 
 };

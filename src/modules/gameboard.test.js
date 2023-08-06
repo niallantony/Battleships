@@ -226,4 +226,8 @@ describe("Methods affecting overall board and gameplay",() => {
         expect(smallGameBoard.checkForEmpty()).toBe(false);
     } )
 
+    test("Displays a gameboard", () => {
+        smallGameBoard.displayConsoleTEMP();
+    })
+
 })
