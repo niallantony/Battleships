@@ -79,12 +79,19 @@ export const Gameboard = (size) => {
         return axis + length > size ? false : true; 
     }
 
+    const checkForAllSunk = () => {
+        const allCondition = []
+        ships.forEach((ship) => allCondition.push(ship.isSunk()));
+        return allCondition.every(condition => condition === true);
+    }
+
     return {
         gameSquare,
         ships,
         hitSquare,
         placeShip,
-        clearShip
+        clearShip,
+        checkForAllSunk,
     }
 
 };

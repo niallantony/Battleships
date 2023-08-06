@@ -1,6 +1,8 @@
 import { Gameboard } from "./gameboard";
 
-const testBoard = Gameboard(10)
+const testBoard = Gameboard(10);
+
+const biggerBoard = Gameboard(20);
 
 describe("Testing initialisation of the game square", () => {
 
@@ -16,6 +18,12 @@ describe("Testing initialisation of the game square", () => {
         expect(testBoard.gameSquare[0].length).toBe(10);
         expect(testBoard.gameSquare[5].length).toBe(10);
         expect(testBoard.gameSquare[9].length).toBe(10);
+    })
+
+    test("Board dimensions can be set", () => {
+        expect(biggerBoard.gameSquare[0].length).toBe(20);
+        expect(biggerBoard.gameSquare[6].length).toBe(20);
+        expect(biggerBoard.gameSquare[13].length).toBe(20);
     })
 
     test("Array is populated with squares", () => {
@@ -174,6 +182,54 @@ describe("Test placements of ship", () => {
 
     test("Unable to place ship in an already occupied space", () => {
         expect(() => testBoard.placeShip(testShip,3,1,false)).toThrow("Space occupied");
+    })
+
+});
+
+describe("Methods affecting overall board and gameplay",() => {
+
+    const gameBoard = Gameboard(10);
+
+    const mockIsSunk = jest.fn()
+    mockIsSunk.mockReturnValue(true);
+
+    const ship1 = {
+                        isSunk: mockIsSunk,
+                        length:4,
+                        position:[]
+    }
+    const ship2 = {
+                        isSunk: mockIsSunk,
+                        length:2,
+                        position:[]
+    }
+    const ship3 = {
+                        isSunk: mockIsSunk,
+                        length:3,
+                        position:[]
+    }
+    const ship4 = {
+                        isSunk: mockIsSunk,
+                        length:3,
+                        position:[]
+    }
+    const ship5 = {
+                        isSunk: mockIsSunk,
+                        length:5,
+                        position:[]
+    }
+
+    beforeAll(() => {
+        gameBoard.placeShip(ship1,1,1,true);
+        gameBoard.placeShip(ship2,0,0,false);
+        gameBoard.placeShip(ship3,8,1,false);
+        gameBoard.placeShip(ship4,3,5,true);
+        gameBoard.placeShip(ship5,3,8,true);
+    })
+
+    test("Checks to see if all ships are sunk",() => {
+        expect(gameBoard.ships.length).toBe(5);
+        expect(gameBoard.checkForAllSunk()).toBe(true);
     })
 
 })
