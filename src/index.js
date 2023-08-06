@@ -21,12 +21,19 @@ const Game = (() => {
     playerBoard.placeShip(playerDestroyer,3,4,false);
     playerBoard.placeShip(playerCruiser,0,9,true);
     
-    compBoard.placeShip(computerTanker,1,1,true);
-    compBoard.placeShip(computerDestroyer,3,4,false);
-    compBoard.placeShip(computerCruiser,0,9,true);
+    compBoard.placeShip(computerTanker,9,2,false);
+    compBoard.placeShip(computerDestroyer,5,6,false);
+    compBoard.placeShip(computerCruiser,0,0,true);
 
     Screen.drawBoard("left",playerBoard);
     Screen.drawBoard("right",compBoard);
+    Screen.drawShip("left",playerTanker);
+    Screen.drawShip("left",playerDestroyer);
+    Screen.drawShip("left",playerCruiser);
+    Screen.drawShip("right",computerTanker);
+    Screen.drawShip("right",computerDestroyer);
+    Screen.drawShip("right",computerCruiser);
+    Screen.consoleNodes();
     
 
 

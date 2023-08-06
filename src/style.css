@@ -7,6 +7,14 @@ body {
     justify-content: center;
 }
 
+#left-zone .ship {
+    background-color: blue;
+}
+
+#right-zone .ship {
+    background-color: red;
+}
+
 #left-zone,
 #right-zone {
     margin: 2rem;
