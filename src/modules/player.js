@@ -15,19 +15,21 @@ export const Computer = (gameboard) => {
 
     const tryMove = (coords) => {
         try {
-            gameboard.hitSquare(coords[0],coords[1]);
-            return true;
+            return gameboard.hitSquare(coords[0],coords[1]);
         } catch(error) {
-            // console.warn(error);
-            return false;
+            return false
         }
     }
 
     const makeMove = () => {
         let moveTaken = false;
+        if (!gameboard.checkForEmpty()) {
+            throw new Error("No More Space");
+        }
         while (!moveTaken) {
             moveTaken = tryMove(generateRandomCoords());
         }
+        return moveTaken;
     }
 
     return {

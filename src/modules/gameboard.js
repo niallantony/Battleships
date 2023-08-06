@@ -41,7 +41,9 @@ export const Gameboard = (size) => {
         hitSquares++;
         if (gameSquare[x][y].ship) {
             gameSquare[x][y].ship.hit();
-            if (gameSquare[x][y].ship.isSunk()) return true;
+            return gameSquare[x][y].ship;
+        } else {
+            return true;
         }
     }
 

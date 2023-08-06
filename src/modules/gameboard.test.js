@@ -78,27 +78,25 @@ describe("Test hit methods of the gameboard", () => {
 
         test("Can hit a ship through hitting a square", () => {
             testBoard.hitSquare(2,2);
+            testBoard.checkForAllSunk();
+            expect(mockIsSunk).toHaveBeenCalled();
             expect(mockHit.mock.calls).toHaveLength(1);
         })
 
         test("Ship doesn't get hit twice", () => {
             expect(() => {
-                testBoard.hitSquare(2,2)
+                testBoard.hitSquare(2,2);
             }).toThrow();
             expect(mockHit.mock.calls).toHaveLength(1);
         })
 
-        test("Is sunk function has be called", () => {
-            expect(mockIsSunk).toHaveReturned();
-        })
-
         test("Ship is sunk after all squares hit", () => {
             testBoard.hitSquare(2,3);
+            testBoard.checkForAllSunk();
             testBoard.hitSquare(2,4);
+            testBoard.checkForAllSunk();
             testBoard.hitSquare(2,5);
-            expect(mockIsSunk.mock.calls).toHaveLength(4);
-            expect(mockHit.mock.calls).toHaveLength(4);
-            expect(mockIsSunk.mock.results[3].value).toBe(true);
+            expect(testBoard.checkForAllSunk()).toBe(true);
         })
 
     })
