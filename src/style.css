@@ -7,17 +7,25 @@ body {
     justify-content: center;
 }
 
-#left-zone .ship {
+#left .ship {
     background-color: blue;
 }
 
-#right-zone .ship {
+#right .ship {
     background-color: red;
 }
 
-#left-zone,
-#right-zone {
+#left,
+#right {
     margin: 2rem;
+}
+
+.miss {
+    background-color: rgba(200,200,255,0.8);
+}
+
+.hit {
+    background-color: rgba(255,200,200,0.8);
 }
 
 .row {
@@ -29,10 +37,26 @@ body {
     width: 100%;
     padding: 1rem;
     flex:1;
+    z-index: 2;
+}
+
+.tile:hover {
+    background-color: rgba(230,200,200,0.4);
+}
+
+#player-one,
+#player-two {
+    position:relative;
+}
+
+.ship-marker {
+    position:absolute;
+    background-color: aqua;
 }
 
 button {
     padding: 0;
     margin: 0;
-    
+    background-color: rgba(200,200,200,0.1);
+    border: 0;
 }

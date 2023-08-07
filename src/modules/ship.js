@@ -13,6 +13,7 @@ export const Ship = (length) => {
         hit,
         isSunk,
         length,
-        position:[]
+        position:[],
+        orientation:null,
     }
 }
