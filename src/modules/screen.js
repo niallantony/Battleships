@@ -79,7 +79,8 @@ export default (() => {
     // }
 
     const drawTurn = (id,result,x,y) => {
-            nodes[id][y].children[x].classList.add(result);
+        if (typeof result !== 'string') result = 'hit';
+        nodes[id][y].children[x].classList.add(result);
     }
 
     const populateNodes = (id, board) => {
