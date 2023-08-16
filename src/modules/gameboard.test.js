@@ -130,7 +130,6 @@ describe("Test placements of ship", () => {
     });
 
     test("Ship is sitting in origin square", () => {
-        console.log(newtestBoard.getSquare(2,2))
         expect(newtestBoard.getSquare(2,2).ship).toBeInstanceOf(Object);
         expect(newtestBoard.getSquare(2,2).ship).toMatchObject(testShip);
     })

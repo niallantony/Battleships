@@ -10,6 +10,12 @@ export const Game = (() => {
     const compPlayer = Computer("player-two",playerBoard);
     playerBoard.owner = playerOne;
     compBoard.owner = compPlayer;
+   
+    const initialiseGame = (playerOne) => {
+        return playerOne
+    }
+    
+    let currentPlayer = initialiseGame(playerOne);
 
     const playerTanker = Ship(5);
     const playerDestroyer = Ship(3);
@@ -31,5 +37,6 @@ export const Game = (() => {
     Screen.drawBoard("left","player-two",compPlayer);
     Screen.drawShips(playerBoard,"player-two");
     Screen.consoleNodes(); 
+
 
 })();

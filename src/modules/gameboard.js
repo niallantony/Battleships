@@ -116,7 +116,6 @@ export const Gameboard = (size,id = null) => {
                 gameSquare[coord[1]][coord[0]].ship = null;
             })
         }
-        console.log(ships)
     }
 
 

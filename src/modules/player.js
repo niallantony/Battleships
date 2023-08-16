@@ -24,12 +24,15 @@ export const Player = (id,gameboard) => {
         }
     }
 
+    //change this to game cycle
+
     const changePlayer = () => {
         if (gameboard.checkForAllSunk()) {
             Screen.endGame();
             return;
         }
-        gameboard.owner.makeMove();
+        const next = gameboard.owner.makeMove();
+        console.log(next);
     }
 
 
@@ -86,27 +89,20 @@ export const Computer = (id,gameboard) => {
                 console.log(currentSuccess);
                 recentHit = true;
             }
-            // move this out of player module into screen module
-            // if (result) Screen.drawTurn(id,result,coords[0],coords[1]);
             return result;
     }
 
     const makeMove = () => {
         let moveTaken = false;
+        let coords;
         if (!gameboard.checkForEmpty()) {
             throw new Error("No More Space");
         }
-        if (recentHit) {
-
-        }
         while (!moveTaken) {
-            moveTaken = tryMove(generateRandomCoords());
+            coords = generateRandomCoords();
+            moveTaken = tryMove(coords);
         }
-        //this also goes in game
-        // if (gameboard.checkForAllSunk()) {
-        //     Screen.endGame();
-        //     return;
-        // }
+        Screen.drawTurn("player-two",moveTaken,coords[0],coords[1]);
         return moveTaken;
     }
 

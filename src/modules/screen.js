@@ -22,7 +22,6 @@ export default (() => {
         }
         populateNodes(id,board);
         board.addEventListener("click", e => {
-            console.log(e);
             if (player.id !== id) return;
             const tile = getTarget(e.target.closest('button'));
             player.makeMove(tile)
