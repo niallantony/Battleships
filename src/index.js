@@ -8,8 +8,8 @@ export const Game = (() => {
     const playerTwoBoard = Gameboard(10, "player-two");
     const playerOne = Player("player-one",playerTwoBoard);
     const playerTwo = Computer("player-two",playerOneBoard);
-    playerOneBoard.owner = playerOne;
-    playerTwoBoard.owner = playerTwo;
+    playerOneBoard.opponent = playerTwo;
+    playerTwoBoard.opponent = playerOne;
    
     const initialiseGame = (playerOne) => {
         return playerOne
@@ -24,8 +24,9 @@ export const Game = (() => {
     }
 
     const nextPlayer = () => {
+        const previous = currentPlayer;
         currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne ;
-        console.log("Now changing: ",currentPlayer.id)
+        Screen.refresh(currentPlayer,previous);
         if (currentPlayer.isComp) {
             currentPlayer.makeMove();
         }
@@ -49,9 +50,7 @@ export const Game = (() => {
     playerTwoBoard.placeShip(computerDestroyer,5,6,false);
     playerTwoBoard.placeShip(computerCruiser,0,0,true);
 
-    Screen.drawBoard("right","player-one",playerOne);
-    Screen.drawBoard("left","player-two",playerTwo);
-    Screen.drawShips(playerOneBoard,"player-two");
+    Screen.refresh(playerOne,playerTwo)
 
     return {
         turnOver,

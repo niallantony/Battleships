@@ -3,23 +3,12 @@ import { Game } from "../index.js";
 
 export const Player = (id,gameboard) => {
 
-    const makeMove = (tile) => {
-        const result = playTile(tile);
-        if (!result) return
-        Screen.drawTurn(id,result,tile[0],tile[1])
-        Game.turnOver();
-    }
-
     
-    const playTile = (tile) => {
+    const makeMove = (tile) => {
         if (!tile) return;
         try {
-            const hit = gameboard.hitSquare(tile[0],tile[1]);
-            if (hit === true) {
-                return 'miss';
-            } else {
-                return hit;
-            }
+            gameboard.hitSquare(tile[0],tile[1]);
+            Game.turnOver();
         } catch(error) {
             console.log(error);
         }
@@ -92,9 +81,7 @@ export const Computer = (id,gameboard) => {
             coords = generateRandomCoords();
             moveTaken = tryMove(coords);
         }
-        Screen.drawTurn("player-two",moveTaken,coords[0],coords[1]);
         Game.turnOver();
-        return moveTaken;
     }
 
     const educatedMove = () => {

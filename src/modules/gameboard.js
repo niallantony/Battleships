@@ -33,6 +33,12 @@ export const Gameboard = (size,id = null) => {
         return gameSquare[y][x];
     }
 
+    const squareStatus = (x,y) => {
+        if (gameSquare[y][x].hit && gameSquare[y][x].ship) return 'hit';
+        if (gameSquare[y][x].hit) return 'miss';
+        return 'empty'
+    }
+
     const getShips = () => {
         return ships;
     }
@@ -129,7 +135,8 @@ export const Gameboard = (size,id = null) => {
         checkForEmpty,
         getShips,
         clearAll,
-        owner:null,
+        squareStatus,
+        opponent:null,
         id,
     }
 

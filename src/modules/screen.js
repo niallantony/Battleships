@@ -1,15 +1,14 @@
 export default (() => {
 
-    const nodes = {};
 
     let playerOne = true;
-    
-    const drawBoard = (zone,id,player) => {
-        const zoneDom = document.getElementById(`${zone}`)
+
+    const drawActiveBoard = (gameboard) => {
+        const zoneDom = document.getElementById("left")
         const board = document.createElement('div');
-        board.id = id;
+        board.id = gameboard.id;
         zoneDom.appendChild(board);
-        const size = player.gameboard.getLength();
+        const size = gameboard.getLength();
         for (let i = 0 ; i < size ; i++ ) {
             const rowContainer = document.createElement('div');
             rowContainer.classList.add('row');
@@ -17,15 +16,43 @@ export default (() => {
             for (let j = 0 ; j < size ; j++ ) {
                 const tile = document.createElement('button');
                 tile.classList.add('tile');
+                tile.classList.add(gameboard.squareStatus(j,i));
                 rowContainer.appendChild(tile);
             }
         }
-        populateNodes(id,board);
         board.addEventListener("click", e => {
-            if (player.id !== id) return;
             const tile = getTarget(e.target.closest('button'));
-            player.makeMove(tile)
+            gameboard.opponent.makeMove(tile)
         })
+    }
+
+    const drawReconBoard = (gameboard) => {
+        const zoneDom = document.getElementById("right");
+        const board = document.createElement('div');
+        board.id = gameboard.id;
+        zoneDom.appendChild(board);
+        const size = gameboard.getLength();
+        for (let i = 0 ; i < size ; i++ ) {
+            const rowContainer = document.createElement('div');
+            rowContainer.classList.add('row');
+            board.appendChild(rowContainer);
+            for (let j = 0 ; j < size ; j++ ) {
+                const tile = document.createElement('button');
+                tile.classList.add('tile');
+                tile.classList.add(gameboard.squareStatus(j,i));
+                rowContainer.appendChild(tile);
+            }
+        }
+        drawShips(gameboard,gameboard.id);
+    }
+
+    const refresh = (current,previous) => {
+        const activeArea = document.getElementById('left');
+        const reconArea = document.getElementById('right');
+        activeArea.innerHTML = '';
+        reconArea.innerHTML = '';
+        drawActiveBoard(current.gameboard);
+        drawReconBoard(previous.gameboard)
     }
 
     const drawShips = (gameboard,onboard) => {
@@ -62,39 +89,23 @@ export default (() => {
         if (!button) return;
         const target = button;
         const parent = target.parentNode;
-        const board = parent.parentNode.id;
-        const y = Array.prototype.indexOf.call(nodes[board],parent);
-        const x = Array.prototype.indexOf.call(nodes[board][y].children,target);
+        const board = document.getElementById(parent.parentNode.id);
+        // Find the coordinates through the elements position amongst its siblings
+        const y = Array.prototype.indexOf.call(board.children,parent);
+        const x = Array.prototype.indexOf.call(parent.children,target);
         return [x,y]
     }
 
 
-    // const drawShip = (id,ship) => {
-    //     ship.position.forEach((coords) => {
-    //         const x = coords[0];
-    //         const y = coords[1];
-    //         nodes[id][y].children[x].classList.add('ship');
-    //     })
-    // }
-
-    const drawTurn = (id,result,x,y) => {
-        if (typeof result !== 'string') result = 'hit';
-        nodes[id][y].children[x].classList.add(result);
-    }
-
-    const populateNodes = (id, board) => {
-        nodes[id] = board.children
-    }
 
     const endGame = () => {
         console.log('Game Over')
     }
 
     return {
-        drawBoard,
         drawShips,
-        drawTurn,
         endGame,
+        refresh,
         playerOne
     }
 })();
