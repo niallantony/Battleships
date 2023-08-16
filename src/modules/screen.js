@@ -86,10 +86,6 @@ export default (() => {
         nodes[id] = board.children
     }
 
-    const consoleNodes = () => {
-        console.log(nodes);
-    }
-
     const endGame = () => {
         console.log('Game Over')
     }
@@ -97,7 +93,6 @@ export default (() => {
     return {
         drawBoard,
         drawShips,
-        consoleNodes,
         drawTurn,
         endGame,
         playerOne

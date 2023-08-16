@@ -1,4 +1,5 @@
 import Screen from "./screen.js";
+import { Game } from "../index.js";
 
 export const Player = (id,gameboard) => {
 
@@ -6,7 +7,7 @@ export const Player = (id,gameboard) => {
         const result = playTile(tile);
         if (!result) return
         Screen.drawTurn(id,result,tile[0],tile[1])
-        changePlayer();
+        Game.turnOver();
     }
 
     
@@ -22,17 +23,6 @@ export const Player = (id,gameboard) => {
         } catch(error) {
             console.log(error);
         }
-    }
-
-    //change this to game cycle
-
-    const changePlayer = () => {
-        if (gameboard.checkForAllSunk()) {
-            Screen.endGame();
-            return;
-        }
-        const next = gameboard.owner.makeMove();
-        console.log(next);
     }
 
 
@@ -103,6 +93,7 @@ export const Computer = (id,gameboard) => {
             moveTaken = tryMove(coords);
         }
         Screen.drawTurn("player-two",moveTaken,coords[0],coords[1]);
+        Game.turnOver();
         return moveTaken;
     }
 
@@ -113,6 +104,7 @@ export const Computer = (id,gameboard) => {
     return {
         id,
         gameboard,
+        isComp:true,
         generateRandomCoords,
         tryMove,
         makeMove
