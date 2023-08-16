@@ -1,7 +1,7 @@
-export const Gameboard = (size) => {
+export const Gameboard = (size,id = null) => {
     const ships = [];
     const turns = [];
-    const Square = (y,x) => {
+    const Square = (x,y) => {
         return {
             ship: null,
             hit: false,
@@ -9,18 +9,18 @@ export const Gameboard = (size) => {
         }
     }
 
-    const buildRow = (index,x) => {
+    const buildRow = (index) => {
         const columns = [];
-        for (let i = 0 ; i < x ; i++) {
+        for (let i = 0 ; i < size ; i++) {
             columns.push(Square(i,index))
         };
         return columns;
     }
 
-    const buildSquare = (y) => {
+    const buildSquare = () => {
         const rows = [];
-        for (let i = 0 ; i < y ; i++ ) {
-            rows.push(buildRow(i,y));
+        for (let i = 0 ; i < size ; i++ ) {
+            rows.push(buildRow(i));
         }
         return rows;
     }
@@ -30,14 +30,25 @@ export const Gameboard = (size) => {
     }
 
     const getSquare = (x,y) => {
-        return gameSquare[x][y];
+        return gameSquare[y][x];
+    }
+
+    const squareStatus = (x,y) => {
+        if (gameSquare[y][x].hit && gameSquare[y][x].ship) return 'hit';
+        if (gameSquare[y][x].hit) return 'miss';
+        return 'empty'
+    }
+
+    const getShips = () => {
+        return ships;
     }
 
     const gameSquare = buildSquare(size);
 
     const hitSquare = (x,y) => {
-        if (gameSquare[x][y].hit) throw new Error("Square already hit");
-        gameSquare[x][y].hit = true;
+        if (!gameSquare[y] || !gameSquare[y][x]) throw new Error("Out of bounds");
+        if (gameSquare[y][x].hit) throw new Error("Square already hit");
+        gameSquare[y][x].hit = true;
         turns.push([x,y]);
         if (gameSquare[y][x].ship) {
             gameSquare[y][x].ship.hit();
@@ -47,20 +58,7 @@ export const Gameboard = (size) => {
         }
     }
 
-    
-    const playTile = (tile) => {
-        if (!tile) return;
-        try {
-            const hit = hitSquare(tile[0],tile[1]);
-            if (hit === true) {
-                return 'miss';
-            } else {
-                return 'hit';
-            }
-        } catch(error) {
-            console.log(error);
-        }
-    }
+
 
     const checkForEmpty = () => {
         if (turns.length < (size*size)) return true;
@@ -71,6 +69,7 @@ export const Gameboard = (size) => {
         const axis = horizontal ? x : y ;
         if (!checkBoundaries(axis,ship.length)) throw new Error("Ship out of bounds");
         if (!checkForShips(ship.length,x,y,horizontal)) throw new Error("Space occupied");
+        ship.orientation = horizontal;
         ships.push(ship);
         for ( let i = 0 ; i < ship.length ; i++) {
             if (horizontal) {
@@ -86,7 +85,7 @@ export const Gameboard = (size) => {
     const clearShip = (ship) => {
         for(let i = 0 ; i < ship.length; i++) {
             const coords = ship.position.pop();
-            gameSquare[coords[0]][coords[1]].ship = null;
+            gameSquare[coords[1]][coords[0]].ship = null;
         }
         ships.splice(ships.indexOf(ship),1);
     }
@@ -116,6 +115,15 @@ export const Gameboard = (size) => {
         return allCondition.every(condition => condition === true);
     }
 
+    const clearAll = () => {
+        for (let i = 0 ; i < ships.length ; i++ ) {
+            const cur = ships.pop();
+            cur.position.forEach((coord) => {
+                gameSquare[coord[1]][coord[0]].ship = null;
+            })
+        }
+    }
+
 
     return {
         getLength,
@@ -125,8 +133,11 @@ export const Gameboard = (size) => {
         checkForAllSunk,
         getSquare,
         checkForEmpty,
-        playTile,
-        owner:null,
+        getShips,
+        clearAll,
+        squareStatus,
+        opponent:null,
+        id,
     }
 
 };

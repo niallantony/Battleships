@@ -47,6 +47,10 @@ describe("Test hit methods of the gameboard", () => {
         expect(() => testBoard.hitSquare(4,4)).toThrow("Square already hit");
     })
 
+    test("Cannot hit out of bounds", () => {
+        expect(() => testBoard.hitSquare(11,11)).toThrow("Out of bounds")
+    })
+
     describe("Hit methods with a ship present", () => {
 
         const mockHit = jest.fn();
@@ -67,7 +71,7 @@ describe("Test hit methods of the gameboard", () => {
         });
     
         afterAll(() => {
-            testBoard.clearShip(testShip);
+            testBoard.clearAll();
         })
 
         test("Ship's methods are accessible", () => {
@@ -105,60 +109,63 @@ describe("Test hit methods of the gameboard", () => {
 
 describe("Test placements of ship", () => {
 
+    const newtestBoard = Gameboard(10);
+
     const testShip = {
                         length:4,
                         position:[]
                     }
 
     beforeEach(() => {
-        return testBoard.placeShip(testShip,2,2,true);
+        return newtestBoard.placeShip(testShip,2,2,true);
     });
 
     afterEach(() => {
-        testBoard.clearShip(testShip);
+        newtestBoard.clearAll();
+        testShip.position = [];
     })
 
     test("Place ship doesn't throw an error",() => {
-        expect(testBoard.placeShip).toBeInstanceOf(Function);
+        expect(newtestBoard.placeShip).toBeInstanceOf(Function);
     });
 
     test("Ship is sitting in origin square", () => {
-        expect(testBoard.getSquare(2,2).ship).toBeInstanceOf(Object);
-        expect(testBoard.getSquare(2,2).ship).toMatchObject(testShip);
+        expect(newtestBoard.getSquare(2,2).ship).toBeInstanceOf(Object);
+        expect(newtestBoard.getSquare(2,2).ship).toMatchObject(testShip);
     })
 
 
     test("Ship is sitting in all squares", () => {
-        expect(testBoard.getSquare(2,2).ship).toMatchObject(testShip);
-        expect(testBoard.getSquare(2,3).ship).toMatchObject(testShip);
-        expect(testBoard.getSquare(2,4).ship).toMatchObject(testShip);
-        expect(testBoard.getSquare(2,5).ship).toMatchObject(testShip);
+        expect(newtestBoard.getSquare(2,2).ship).toMatchObject(testShip);
+        expect(newtestBoard.getSquare(3,2).ship).toMatchObject(testShip);
+        expect(newtestBoard.getSquare(4,2).ship).toMatchObject(testShip);
+        expect(newtestBoard.getSquare(5,2).ship).toMatchObject(testShip);
     })
 
     test("Ship has position logged", () => {
-        expect(testShip.position).toEqual([[2,2],[2,3],[2,4],[2,5]])
+        expect(testShip.position).toEqual([[2,2],[3,2],[4,2],[5,2]])
     })
 
     test("Clear ship clears the ship in question", () => {
-        testBoard.clearShip(testShip);
-        expect(testBoard.getSquare(2,2).ship).toBe(null);
-        expect(testBoard.getSquare(2,3).ship).toBe(null);
-        expect(testBoard.getSquare(2,4).ship).toBe(null);
-        expect(testBoard.getSquare(2,5).ship).toBe(null);
+        newtestBoard.clearShip(testShip);
+        expect(newtestBoard.getSquare(2,2).ship).toBe(null);
+        expect(newtestBoard.getSquare(2,3).ship).toBe(null);
+        expect(newtestBoard.getSquare(2,4).ship).toBe(null);
+        expect(newtestBoard.getSquare(2,5).ship).toBe(null);
         //Place it again so the afterEach can remove it
-        testBoard.placeShip(testShip,2,2,true);
+        newtestBoard.placeShip(testShip,2,2,true);
     })
 
     test("Unable to place a ship out of bounds horizontally", () => {
-        expect(() => testBoard.placeShip(testShip,9,2,true)).toThrow("Ship out of bounds");
+        expect(() => newtestBoard.placeShip(testShip,9,2,true)).toThrow("Ship out of bounds");
     })
 
     test("Unable to place a ship out of bounds vertically", () => {
-        expect(() => testBoard.placeShip(testShip,2,9,false)).toThrow("Ship out of bounds");
+        expect(() => newtestBoard.placeShip(testShip,2,9,false)).toThrow("Ship out of bounds");
     })
 
     test("Unable to place ship in an already occupied space", () => {
-        expect(() => testBoard.placeShip(testShip,3,1,false)).toThrow("Space occupied");
+        expect(() => newtestBoard.placeShip(testShip,3,1,false)).toThrow("Space occupied");
     })
 
 });
@@ -225,9 +232,5 @@ describe("Methods affecting overall board and gameplay",() => {
         smallGameBoard.hitSquare(2,2);
         expect(smallGameBoard.checkForEmpty()).toBe(false);
     } )
-
-    test("Displays a gameboard", () => {
-        smallGameBoard.displayConsoleTEMP();
-    })
 
 })

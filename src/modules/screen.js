@@ -1,12 +1,14 @@
 export default (() => {
 
-    const nodes = {};
 
     let playerOne = true;
-    
-    const drawBoard = (id,player) => {
-        const board = document.getElementById(`${id}`);
-        const size = player.gameboard.getLength();
+
+    const drawActiveBoard = (gameboard) => {
+        const zoneDom = document.getElementById("left")
+        const board = document.createElement('div');
+        board.id = gameboard.id;
+        zoneDom.appendChild(board);
+        const size = gameboard.getLength();
         for (let i = 0 ; i < size ; i++ ) {
             const rowContainer = document.createElement('div');
             rowContainer.classList.add('row');
@@ -14,58 +16,98 @@ export default (() => {
             for (let j = 0 ; j < size ; j++ ) {
                 const tile = document.createElement('button');
                 tile.classList.add('tile');
+                tile.classList.add(gameboard.squareStatus(j,i));
                 rowContainer.appendChild(tile);
             }
         }
-        populateNodes(id,board);
         board.addEventListener("click", e => {
-            if (player.id !== id) return;
             const tile = getTarget(e.target.closest('button'));
-            player.makeMove(tile)
+            gameboard.opponent.makeMove(tile)
         })
+    }
+
+    const drawReconBoard = (gameboard) => {
+        const zoneDom = document.getElementById("right");
+        const board = document.createElement('div');
+        board.id = gameboard.id;
+        zoneDom.appendChild(board);
+        const size = gameboard.getLength();
+        for (let i = 0 ; i < size ; i++ ) {
+            const rowContainer = document.createElement('div');
+            rowContainer.classList.add('row');
+            board.appendChild(rowContainer);
+            for (let j = 0 ; j < size ; j++ ) {
+                const tile = document.createElement('button');
+                tile.classList.add('tile');
+                tile.classList.add(gameboard.squareStatus(j,i));
+                rowContainer.appendChild(tile);
+            }
+        }
+        drawShips(gameboard,gameboard.id);
+    }
+
+    const refresh = (current,previous) => {
+        const activeArea = document.getElementById('left');
+        const reconArea = document.getElementById('right');
+        activeArea.innerHTML = '';
+        reconArea.innerHTML = '';
+        drawActiveBoard(current.gameboard);
+        drawReconBoard(previous.gameboard)
+    }
+
+    const drawShips = (gameboard,onboard) => {
+        const ships = gameboard.getShips();
+        const playzone = document.getElementById(onboard);
+        ships.forEach((ship) => {
+            const dimensions = calculateScreenPosition(playzone, gameboard.getLength(), ship)
+            playzone.appendChild(drawShip(dimensions));
+        })
+    }
+
+
+    const drawShip = (dimensions) => {
+        const ship = document.createElement('div');
+        ship.classList.add('ship-marker');
+        ship.setAttribute('style',`top:${dimensions.top};left:${dimensions.left};width:${dimensions.length};height:${dimensions.height}`);
+        return ship
+    }
+
+    const calculateScreenPosition = (zone, scale ,ship) => {
+        const unit = zone.offsetWidth / scale;
+        const left = Math.floor(ship.position[0][0] * unit)+'px';
+        const top = Math.floor(ship.position[0][1] * unit)+'px';
+        const length = ship.orientation ? ship.length * unit : unit ;
+        const height = ship.orientation ? unit : ship.length * unit ;
+        return {
+            top,
+            left,
+            length:length+'px',
+            height:height+'px'
+        }
     }
 
     const getTarget = (button) => {
         if (!button) return;
         const target = button;
         const parent = target.parentNode;
-        const board = parent.parentNode.id;
-        const y = Array.prototype.indexOf.call(nodes[board],parent);
-        const x = Array.prototype.indexOf.call(nodes[board][y].children,target);
+        const board = document.getElementById(parent.parentNode.id);
+        // Find the coordinates through the elements position amongst its siblings
+        const y = Array.prototype.indexOf.call(board.children,parent);
+        const x = Array.prototype.indexOf.call(parent.children,target);
         return [x,y]
     }
 
 
-    const drawShip = (id,ship) => {
-        ship.position.forEach((coords) => {
-            const x = coords[0];
-            const y = coords[1];
-            nodes[id][y].children[x].classList.add('ship');
-        })
-    }
-
-    const drawTurn = (id,result,x,y) => {
-            nodes[id][y].children[x].classList.add(result);
-    }
-
-    const populateNodes = (id, board) => {
-        nodes[id] = board.children
-    }
-
-    const consoleNodes = () => {
-        console.log(nodes);
-    }
 
     const endGame = () => {
         console.log('Game Over')
     }
 
+
     return {
-        drawBoard,
-        drawShip,
-        consoleNodes,
-        drawTurn,
+        drawShips,
         endGame,
+        refresh,
         playerOne
     }
 })();

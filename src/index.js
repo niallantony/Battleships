@@ -4,12 +4,35 @@ import { Player , Computer } from "./modules/player.js";
 import Screen from "./modules/screen.js";
 
 export const Game = (() => {
-    const playerBoard = Gameboard(10);
-    const compBoard = Gameboard(10);
-    const playerOne = Player("right",compBoard);
-    const compPlayer = Computer("left",playerBoard);
-    playerBoard.owner = playerOne;
-    compBoard.owner = compPlayer;
+    const playerOneBoard = Gameboard(10, "player-one");
+    const playerTwoBoard = Gameboard(10, "player-two");
+    const playerOne = Player("player-one",playerTwoBoard);
+    const playerTwo = Computer("player-two",playerOneBoard);
+    playerOneBoard.opponent = playerTwo;
+    playerTwoBoard.opponent = playerOne;
+   
+    const initialiseGame = (playerOne) => {
+        return playerOne
+    }
+
+    const turnOver = () => {
+        if(currentPlayer.gameboard.checkForAllSunk()) {
+            Screen.endGame();
+            return;
+        }
+        nextPlayer();
+    }
+
+    const nextPlayer = () => {
+        const previous = currentPlayer;
+        currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne ;
+        Screen.refresh(currentPlayer,previous);
+        if (currentPlayer.isComp) {
+            currentPlayer.makeMove();
+        }
+    }
+
+    let currentPlayer = initialiseGame(playerOne);
 
     const playerTanker = Ship(5);
     const playerDestroyer = Ship(3);
@@ -19,19 +42,17 @@ export const Game = (() => {
     const computerDestroyer = Ship(3);
     const computerCruiser = Ship(4);
 
-    playerBoard.placeShip(playerTanker,1,1,true);
-    playerBoard.placeShip(playerDestroyer,3,4,false);
-    playerBoard.placeShip(playerCruiser,0,9,true);
+    playerOneBoard.placeShip(playerTanker,1,1,true);
+    playerOneBoard.placeShip(playerDestroyer,3,4,false);
+    playerOneBoard.placeShip(playerCruiser,0,9,true);
     
-    compBoard.placeShip(computerTanker,9,2,false);
-    compBoard.placeShip(computerDestroyer,5,6,false);
-    compBoard.placeShip(computerCruiser,0,0,true);
+    playerTwoBoard.placeShip(computerTanker,9,2,false);
+    playerTwoBoard.placeShip(computerDestroyer,5,6,false);
+    playerTwoBoard.placeShip(computerCruiser,0,0,true);
 
-    Screen.drawBoard("right",playerOne);
-    Screen.drawBoard("left",compPlayer);
-    Screen.drawShip("left",playerTanker);
-    Screen.drawShip("left",playerDestroyer);
-    Screen.drawShip("left",playerCruiser);
-    Screen.consoleNodes(); 
+    Screen.refresh(playerOne,playerTwo)
 
+    return {
+        turnOver,
+    }
 })();

@@ -35,24 +35,27 @@ describe("Checks computers moves", () => {
     const testGameboard = {
         getLength: () => 10,
         hitSquare: mockHit,
-        checkForEmpty: () => true
+        checkForEmpty: () => true,
+        playTile: ()=> testGameboard.hitSquare,
     }
 
     const fullGameboard = {
         getLength: () => 10,
         hitSquare: mockHit,
-        checkForEmpty: () => false
+        checkForEmpty: () => false,
+        playTile:() => true,
     }
 
     const smallBoard = {
         getLength: () => 2,
         hitSquare: mockSmallHit,
-        checkForEmpty: mockCheckSmall
+        checkForEmpty: mockCheckSmall,
+        playTile: () => smallBoard.hitSquare,
     }
 
-    const testComp = Computer(testGameboard);
-    const fullComp = Computer(fullGameboard);
-    const smallComp = Computer(smallBoard);
+    const testComp = Computer('id',testGameboard);
+    const fullComp = Computer('id',fullGameboard);
+    const smallComp = Computer('id',smallBoard);
 
     test("Computer chooses a random coordinate in bounds of the board", () => {
         expect(testComp.generateRandomCoords()[0]).toBeLessThan(10);
@@ -60,7 +63,7 @@ describe("Checks computers moves", () => {
     })
 
     test("Try move fails with a move out of bounds", () => {
-        expect(testComp.tryMove([11,0])).toBe(false);
+        expect(testComp.tryMove([11,0])).not.toBeDefined();
     });
 
     test("Make move calls the hit function once", () => {
@@ -77,8 +80,8 @@ describe("Checks computers moves", () => {
         expect(() => fullComp.makeMove()).toThrow("No More Space");  
     })
 
-    test("Function returns a boolean or a ship", () => {
-        expect(testComp.makeMove()).toBe(true);
+    test("Function returns a string or a ship", () => {
+        expect(testComp.makeMove()).toBeDefined();
     })
 
     test("Will generate coordinates until the board is full", () => {
