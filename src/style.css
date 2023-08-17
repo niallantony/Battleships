@@ -1,3 +1,11 @@
+:root {
+    --tile:  rgba(200,200,200,0.1);
+    --tile-attack: rgba(255,150,150,0.9);
+    --tile-hit: rgba(255,200,200,0.8);
+    --tile-miss: rgba(200,200,255,0.8);
+    --tile-hover: rgba(230,200,200,0.4);
+}
+
 #gamearea {
     display: flex;
 }
@@ -21,11 +29,11 @@ body {
 }
 
 .miss {
-    background-color: rgba(200,200,255,0.8);
+    background-color: var(--tile-miss);
 }
 
 .hit {
-    background-color: rgba(255,200,200,0.8);
+    background-color: var(--tile-hit);
 }
 
 .row {
@@ -41,7 +49,7 @@ body {
 }
 
 .tile:hover {
-    background-color: rgba(230,200,200,0.4);
+    background-color: var(--tile-hover);
 }
 
 #player-one,
@@ -57,6 +65,20 @@ body {
 button {
     padding: 0;
     margin: 0;
-    background-color: rgba(200,200,200,0.1);
+    background-color: var(--tile);
     border: 0;
+}
+
+button.tile.attack {
+    animation: attack-pulse 0.5s infinite;
+    animation-direction: alternate;
+}
+
+@keyframes attack-pulse {
+    0% {
+        background-color: var(--tile-attack) ;
+    }
+    100% {
+        background-color: var(--tile);
+    }
 }

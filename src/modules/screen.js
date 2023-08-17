@@ -1,3 +1,5 @@
+import {Game} from "../index.js";
+
 export default (() => {
 
 
@@ -64,6 +66,25 @@ export default (() => {
         })
     }
 
+    const renderComputerMove = async (coords) => {
+        const activeZone = document.getElementById("left").querySelector('div');
+        const row = activeZone.children[coords[1]];
+        const cell = row.children[coords[0]];
+        cell.classList.add('attack');
+        console.log(cell);
+        const showComputersTurn = await stallComputerMove();
+        showComputersTurn();
+    }
+
+    const stallComputerMove = async () => {
+        const computerFinished = await promisify(Game.turnOver, 2000);
+        return computerFinished
+    }
+
+    const promisify = (callback,timer) => {
+        return new Promise(resolve => setTimeout(() => resolve(callback), timer));
+    }
+
 
     const drawShip = (dimensions) => {
         const ship = document.createElement('div');
@@ -106,6 +127,7 @@ export default (() => {
 
     return {
         drawShips,
+        renderComputerMove,
         endGame,
         refresh,
         playerOne
