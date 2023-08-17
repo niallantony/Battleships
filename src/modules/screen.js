@@ -1,3 +1,5 @@
+import {Game} from "../index.js";
+
 export default (() => {
 
 
@@ -64,6 +66,18 @@ export default (() => {
         })
     }
 
+    const renderComputerMove = (coords) => {
+        const activeZone = document.getElementById("left").querySelector('div');
+        const row = activeZone.children[coords[1]];
+        const cell = row.children[coords[0]];
+        cell.classList.add('attack');
+        console.log(cell);
+        const timeout = new Promise(resolve => setTimeout(resolve, 5000));
+        timeout.then(console.log("Dealt with: ", coords))
+        .then(cell.classList.remove('attack'))
+        .then(Game.turnOver())
+    }
+
 
     const drawShip = (dimensions) => {
         const ship = document.createElement('div');
@@ -106,6 +120,7 @@ export default (() => {
 
     return {
         drawShips,
+        renderComputerMove,
         endGame,
         refresh,
         playerOne

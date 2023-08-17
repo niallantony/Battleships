@@ -81,7 +81,7 @@ export const Computer = (id,gameboard) => {
             coords = generateRandomCoords();
             moveTaken = tryMove(coords);
         }
-        Game.turnOver();
+        Screen.renderComputerMove(coords);
     }
 
     const educatedMove = () => {
