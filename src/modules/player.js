@@ -1,5 +1,4 @@
 import Screen from "./screen.js";
-import { Game } from "../index.js";
 
 export const Player = (id,gameboard) => {
 
@@ -7,11 +6,16 @@ export const Player = (id,gameboard) => {
     const makeMove = (tile) => {
         if (!tile) return;
         try {
-            gameboard.hitSquare(tile[0],tile[1]);
+            const move = gameboard.hitSquare(tile[0],tile[1]);
+            if (typeof move === 'object' && move.isSunk()) Screen.sunkShip(move); 
             Screen.renderPlayerMove(tile,gameboard);
         } catch(error) {
             console.log(error);
         }
+    }
+
+    const placeShip = (ship,coords,orientation) => {
+        gameboard.placeShip(ship,coords[0],coords[1],orientation);
     }
 
 

@@ -17,6 +17,8 @@
 body {
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 #left .ship {
@@ -30,6 +32,7 @@ body {
 #left,
 #right {
     margin: 2rem;
+    position:relative;
 }
 
 .miss {
@@ -50,6 +53,9 @@ body {
     padding: 1rem;
     flex:1;
     z-index: 2;
+    margin: 0;
+    background: var(--tile);
+    border: 0;
 }
 
 div.tile {
@@ -85,12 +91,12 @@ button.tile:hover {
     background-color: aqua;
 }
 
-button {
+/* button {
     padding: 0;
     margin: 0;
     background-color: var(--tile);
     border: 0;
-}
+} */
 
 button.tile.attack {
     animation: attack-pulse 0.5s infinite;
@@ -104,4 +110,29 @@ button.tile.attack {
     100% {
         background-color: var(--tile);
     }
+}
+
+.place-ship {
+    background-color: blue;
+    border-radius: 5px;
+    padding: 1rem;
+    color: white;
+}
+
+.place-ship:hover {
+    background-color: #3333FF;
+}
+
+.place-ship:active {
+    transform: scale(103%);
+}
+
+.placeholder {
+    border:0;
+    margin:0;
+    padding:0;
+}
+
+.placeholder:hover {
+    background-color: rgb(255, 255, 255);
 }

@@ -1,4 +1,9 @@
-import {Game} from "../index.js";
+import { Ship } from "./ship.js";
+import battleshipImage from "../images/battleship.png";
+
+const SHIP_IMAGES = {
+    battleship: battleshipImage,
+}
 
 export default (() => {
 
@@ -96,7 +101,6 @@ export default (() => {
         const row = activeZone.children[coords[1]];
         const cell = row.children[coords[0]];
         cell.classList.add('attack');
-        console.log(cell);
         const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
         removeAttackMarker();
         //get result of attack
@@ -110,7 +114,6 @@ export default (() => {
         const row = activeZone.children[coords[1]];
         const cell = row.children[coords[0]];
         cell.classList.add('attack');
-        console.log(cell);
         const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
         removeAttackMarker();
         //get result of attack
@@ -119,13 +122,17 @@ export default (() => {
         showPlayersTurn();
     }
 
+    const sunkShip = (ship) => {
+        console.log(ship.name, ' is a goner')
+    }
+
     const showPlayerResult = async () => {
-        const playerResultTimer = await promisify(Game.turnOver, 2000);
+        const playerResultTimer = await promisify(f(), 2000);
         return playerResultTimer
     }
     
     const stallComputerMove = async () => {
-        const computerFinished = await promisify(Game.turnOver, 2000);
+        const computerFinished = await promisify(f(), 2000);
         return computerFinished
     }
     
@@ -169,16 +176,126 @@ export default (() => {
         const target = button;
         const parent = target.parentNode;
         const board = document.getElementById(parent.parentNode.id);
+        console.log(board,parent,target);
         // Find the coordinates through the elements position amongst its siblings
         const y = Array.prototype.indexOf.call(board.children,parent);
         const x = Array.prototype.indexOf.call(parent.children,target);
         return [x,y]
     }
 
-
-
     const endGame = () => {
         console.log('Game Over')
+    }
+
+    const drawPlacementBoard = (gameboard) => {
+        const zoneDom = document.getElementById("left")
+        const board = document.createElement('div');
+        board.id = gameboard.id;
+        zoneDom.appendChild(board);
+        const size = gameboard.getLength();
+        for (let i = 0 ; i < size ; i++ ) {
+            const rowContainer = document.createElement('div');
+            rowContainer.classList.add('row');
+            board.appendChild(rowContainer);
+            for (let j = 0 ; j < size ; j++ ) {
+                const tile = document.createElement('button');
+                tile.classList.add('tile');
+                tile.setAttribute('style','position:relative;')
+                tile.classList.add(gameboard.squareStatus(j,i));
+                rowContainer.appendChild(tile);
+            }
+        }
+    }
+
+    const renderShipButtons = () => {
+        const shipBar = document.getElementById('ship-bar');
+    }
+
+    const shipPlacement = (button,horizontal = true) => {
+        const shipTemplate = Ship(button.id)
+        shipTemplate.orientation = horizontal;
+        const tiles = document.querySelectorAll('.tile');
+        const template = document.createElement('button');
+        template.classList.add('placeholder');
+        template.id = button.id
+        template.style.position = 'absolute';
+        template.style.top = '0px';
+        template.style.left = '0px';
+        template.style.backgroundImage = `url(${SHIP_IMAGES[button.id]}`;
+        const board = document.getElementById('left');
+        const hoverEvent = hoverImage(board,template);
+        board.appendChild(template);
+        rotateShip(template,true,tiles[0].offsetWidth,shipTemplate.length);
+        tiles.forEach((tile) => {
+            if (isOutOfBounds(horizontal,shipTemplate.length,tile)) return;
+            tile.addEventListener('click',(e) => {
+                board.removeEventListener('mouseover',hoverEvent);
+                placeTemplate(e.target.closest('.tile'),template);
+            });
+        });
+    }
+
+    const isOutOfBounds = (orientation,length, tile) => {
+        if (orientation) {
+            const row = tile.parentNode.children;
+            const index = Array.prototype.indexOf.call(row,tile);
+            if ((length + index) > row.length) return true;
+            return false;
+        } else {
+            const columns = tile.parentNode.parentnode.children;
+            const index = Array.prototype.indexOf.call(columns,tile.parentNode);
+            if ((length + index) > columns.length) return true;
+            return false;
+        }
+    }
+
+    const rotateShip = (image,orientation,unit,length) => {
+        const width = orientation ? (unit*length)+'px' : unit+'px';
+        const height = orientation ? unit +'px': (unit*length)+'px';
+        image.style.width = width;
+        image.style.height = height;
+    }
+
+    const moveShip = (template) => {
+        template.parentNode.removeChild(template);
+        shipPlacement(template);
+    }
+
+    const placeTemplate = (tile,template) => {
+        const coords = getTarget(tile);
+        const position = calculateTemplatePosition(tile.offsetWidth,coords);
+        template.style.top = position.top;
+        template.style.left = position.left;
+        template.style.zIndex = 10;
+        template.addEventListener('click',(e) => moveShip(e.target.closest('.placeholder')));
+        const tiles = document.querySelectorAll('.tile');
+        tiles.forEach((tile) => {
+            tile.replaceWith(tile.cloneNode(true));
+        })
+    }
+
+    const calculateTemplatePosition = (unit,coords) => {
+        const left = (coords[0]*unit)+'px';
+        const top = (coords[1]*unit)+'px';
+        return {
+            left,
+            top
+        }
+    }
+
+    // const hoverImage = (element,img) => {
+    //     element.addEventListener('mouseenter',(e) => e.target.appendChild(img));
+    //     element.addEventListener('mouseleave',(e) => e.target.removeChild(img));
+    // }
+
+    const hoverImage = (element,img) => {
+        const event = element.addEventListener('mouseover',(e) => {
+            const coords = getTarget(e.target.closest('.tile'));
+            const pos = calculateTemplatePosition(e.target.closest('.tile').offsetWidth,coords);
+            img.style.top = pos.top;
+            img.style.left = pos.left;
+        })
+        return event;
     }
 
 
@@ -188,7 +305,10 @@ export default (() => {
         renderComputerMove,
         endGame,
         refresh,
+        sunkShip,
         renderPlayerMove,
+        shipPlacement,
+        drawPlacementBoard,
         playerOne
     }
 })();

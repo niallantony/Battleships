@@ -1,7 +1,7 @@
-import { Ship } from "./modules/ship.js";
-import { Gameboard } from "./modules/gameboard.js";
-import { Player , Computer } from "./modules/player.js";
 import Screen from "./modules/screen.js";
+import { Player , Computer } from "./modules/player.js";
+import { Gameboard } from "./modules/gameboard.js";
+import './style.css';
 
 export const Game = (() => {
     const playerOneBoard = Gameboard(10, "player-one");
@@ -32,25 +32,29 @@ export const Game = (() => {
         }
     }
 
-    let currentPlayer = initialiseGame(playerOne);
+    Screen.drawPlacementBoard(playerOneBoard);
+    const battleshipButton = document.getElementById('battleship');
+    battleshipButton.addEventListener('click', () => Screen.shipPlacement(battleshipButton));
 
-    const playerTanker = Ship(5);
-    const playerDestroyer = Ship(3);
-    const playerCruiser = Ship(4);
+    // let currentPlayer = initialiseGame(playerOne);
 
-    const computerTanker = Ship(5);
-    const computerDestroyer = Ship(3);
-    const computerCruiser = Ship(4);
+    // const playerTanker = Ship(5, 'Tanker');
+    // const playerDestroyer = Ship(3, 'Destroyer');
+    // const playerCruiser = Ship(4, 'Cruiser');
 
-    playerOneBoard.placeShip(playerTanker,1,1,true);
-    playerOneBoard.placeShip(playerDestroyer,3,4,false);
-    playerOneBoard.placeShip(playerCruiser,0,9,true);
+    // const computerTanker = Ship(5, 'Tanker');
+    // const computerDestroyer = Ship(3, 'Destroyer');
+    // const computerCruiser = Ship(4, 'Cruiser');
+
+    // playerOneBoard.placeShip(playerTanker,1,1,true);
+    // playerOneBoard.placeShip(playerDestroyer,3,4,false);
+    // playerOneBoard.placeShip(playerCruiser,0,9,true);
     
-    playerTwoBoard.placeShip(computerTanker,9,2,false);
-    playerTwoBoard.placeShip(computerDestroyer,5,6,false);
-    playerTwoBoard.placeShip(computerCruiser,0,0,true);
+    // playerTwoBoard.placeShip(computerTanker,9,2,false);
+    // playerTwoBoard.placeShip(computerDestroyer,5,6,false);
+    // playerTwoBoard.placeShip(computerCruiser,0,0,true);
 
-    Screen.refresh(playerOne,playerTwo)
+    // Screen.refresh(playerOne,playerTwo)
 
     return {
         turnOver,
