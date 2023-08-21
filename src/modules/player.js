@@ -14,10 +14,6 @@ export const Player = (id,gameboard) => {
         }
     }
 
-    const placeShip = (ship,coords,orientation) => {
-        gameboard.placeShip(ship,coords[0],coords[1],orientation);
-    }
-
 
     return {
         playing: false,

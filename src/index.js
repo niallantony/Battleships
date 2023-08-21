@@ -32,9 +32,12 @@ export const Game = (() => {
         }
     }
 
-    Screen.drawPlacementBoard(playerOneBoard);
-    const battleshipButton = document.getElementById('battleship');
-    battleshipButton.addEventListener('click', () => Screen.shipPlacement(battleshipButton));
+    const shipPlacement = (player) => {
+        Screen.drawPlacementBoard(player.gameboard);
+        Screen.renderPlacementScreen();
+    }
+
+    shipPlacement(playerOne);
 
     // let currentPlayer = initialiseGame(playerOne);
 

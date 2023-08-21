@@ -176,7 +176,6 @@ export default (() => {
         const target = button;
         const parent = target.parentNode;
         const board = document.getElementById(parent.parentNode.id);
-        console.log(board,parent,target);
         // Find the coordinates through the elements position amongst its siblings
         const y = Array.prototype.indexOf.call(board.children,parent);
         const x = Array.prototype.indexOf.call(parent.children,target);
@@ -207,11 +206,27 @@ export default (() => {
         }
     }
 
-    const renderShipButtons = () => {
+    const renderPlacementScreen = (gameboard) => {
+        const placementBoard = PlacementBoard(gameboard);
         const shipBar = document.getElementById('ship-bar');
+        const ships = placementBoard.shipsNames;
+        ships.forEach((ship) => {
+            const buttonText = String('Place '+ship).toUpperCase();
+            const button = document.createElement('button');
+            button.classList.add('place-ship');
+            button.id = ship;
+            button.textContent = buttonText;
+            shipBar.appendChild(button);
+            button.addEventListener('click',() => {
+                shipBar.removeChild(button);
+                shipPlacement(button,placementBoard.ships[ship]);
+            })
+        });
     }
 
-    const shipPlacement = (button,horizontal = true) => {
+
+
+    const shipPlacement = (button,marker,horizontal = true) => {
         const shipTemplate = Ship(button.id)
         shipTemplate.orientation = horizontal;
         const tiles = document.querySelectorAll('.tile');
@@ -223,14 +238,14 @@ export default (() => {
         template.style.left = '0px';
         template.style.backgroundImage = `url(${SHIP_IMAGES[button.id]}`;
         const board = document.getElementById('left');
-        const hoverEvent = hoverImage(board,template);
         board.appendChild(template);
         rotateShip(template,true,tiles[0].offsetWidth,shipTemplate.length);
         tiles.forEach((tile) => {
             if (isOutOfBounds(horizontal,shipTemplate.length,tile)) return;
+            hoverImage(tile,template);
             tile.addEventListener('click',(e) => {
-                board.removeEventListener('mouseover',hoverEvent);
-                placeTemplate(e.target.closest('.tile'),template);
+                marker.horizontal = horizontal;
+                placeTemplate(e.target.closest('.tile'),template,marker);
             });
         });
     }
@@ -256,18 +271,19 @@ export default (() => {
         image.style.height = height;
     }
 
-    const moveShip = (template) => {
+    const moveShip = (template,marker) => {
         template.parentNode.removeChild(template);
-        shipPlacement(template);
+        shipPlacement(template,marker,marker.horizontal);
     }
 
-    const placeTemplate = (tile,template) => {
+    const placeTemplate = (tile,template,marker) => {
         const coords = getTarget(tile);
+        marker.coords = coords;
         const position = calculateTemplatePosition(tile.offsetWidth,coords);
         template.style.top = position.top;
         template.style.left = position.left;
         template.style.zIndex = 10;
-        template.addEventListener('click',(e) => moveShip(e.target.closest('.placeholder')));
+        template.addEventListener('click',(e) => moveShip(e.target.closest('.placeholder'),marker));
         const tiles = document.querySelectorAll('.tile');
         tiles.forEach((tile) => {
             tile.replaceWith(tile.cloneNode(true));
@@ -302,13 +318,58 @@ export default (() => {
     return {
         drawShips,
         renderComputerMove,
-        renderComputerMove,
         endGame,
         refresh,
         sunkShip,
         renderPlayerMove,
+        renderPlacementScreen,
         shipPlacement,
         drawPlacementBoard,
         playerOne
     }
 })();
+
+const PlacementBoard = (gameboard) => {
+    const ships = {
+        carrier:{
+            coords:[],
+            horizontal:true,
+        },
+        battleship:{
+            coords:[],
+            horizontal:true,
+        },
+        cruiser:{
+            coords:[],
+            horizontal:true,
+        },
+        submarine:{
+            coords:[],
+            horizontal:true,
+        },
+        destroyer:{
+            coords:[],
+            horizontal:true,
+        }
+    }
+
+    const placeMarker = (ship,coords,horizontal) => {
+        ships[ship].coords = coords;
+        ships[ship].horizontal = horizontal;
+    }
+
+    const setShips = () => {
+        Object.keys(ships).forEach((ship) => {
+            const newShip = Ship(ship);
+            gameboard.placeShip(newShip,ships[ship].coords[0],ships[ship].coords[1],ships[ship].horizontal);
+        })
+    }
+    return {
+        placeMarker,
+        setShips,
+        ships,
+        get shipsNames() {
+            return Object.keys(ships);
+        }
+    }
+}
