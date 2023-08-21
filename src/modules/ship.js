@@ -1,6 +1,12 @@
 export const Ship = (name = null) => {
     let hitCounter = 0;
 
+    let orientation = false;
+
+    const rotate = () => {
+        orientation = !orientation;
+    }
+
     const SHIP_SIZES = {
         carrier: 5,
         battleship: 4,
@@ -22,7 +28,10 @@ export const Ship = (name = null) => {
         isSunk,
         length,
         position:[],
-        orientation:null,
+        get orientation() {
+            return orientation
+        },
+        rotate,
         get name() {
             const arrayedName = name.split('');
             arrayedName[0].toUpperCase();

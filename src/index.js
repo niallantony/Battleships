@@ -1,4 +1,5 @@
 import Screen from "./modules/screen.js";
+import { PlacementBoard } from "./modules/placementBoard.js";
 import { Player , Computer } from "./modules/player.js";
 import { Gameboard } from "./modules/gameboard.js";
 import './style.css';
@@ -33,8 +34,8 @@ export const Game = (() => {
     }
 
     const shipPlacement = (player) => {
-        Screen.drawPlacementBoard(player.gameboard);
-        Screen.renderPlacementScreen();
+        const placement = PlacementBoard(player.gameboard);
+        placement.renderPlacementScreen();
     }
 
     shipPlacement(playerOne);

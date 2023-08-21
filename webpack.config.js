@@ -18,6 +18,7 @@ const config = {
         player:"./src/modules/player.js",
         gameboard:"./src/modules/gameboard.js",
         screen:"./src/modules/screen.js",
+        placementBoard:"./src/modules/placementBoard.js",
     },
     output: {
         filename: '[name].bundle.js',
