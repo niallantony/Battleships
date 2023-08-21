@@ -185,6 +185,7 @@ export default (() => {
     return {
         drawShips,
         renderComputerMove,
+        renderComputerMove,
         endGame,
         refresh,
         renderPlayerMove,
