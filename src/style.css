@@ -10,6 +10,10 @@
     display: flex;
 }
 
+#right {
+    position: relative;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -48,8 +52,27 @@ body {
     z-index: 2;
 }
 
-.tile:hover {
+div.tile {
+    background-color: var(--tile);
+}
+
+button.tile:hover {
     background-color: var(--tile-hover);
+}
+
+.hidden-board {
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    margin:auto;
+    width:50%;
+    height: fit-content;
+    padding: 1rem;
+    background-color: var(--tile-hit);
+    text-align: center;
+    border-radius: 5px;
 }
 
 #player-one,

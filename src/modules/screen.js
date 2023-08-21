@@ -48,14 +48,91 @@ export default (() => {
         drawShips(gameboard,gameboard.id);
     }
 
+    const drawHiddenReconBoard = (gameboard) => {
+        const zoneDom = document.getElementById("right");
+        const board = document.createElement('div');
+        board.id = gameboard.id;
+        zoneDom.appendChild(board);
+        const size = gameboard.getLength();
+        //draw the tiles to maintain size consistency
+        for (let i = 0 ; i < size ; i++ ) {
+            const rowContainer = document.createElement('div');
+            rowContainer.classList.add('row');
+            board.appendChild(rowContainer);
+            for (let j = 0 ; j < size ; j++ ) {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+                rowContainer.appendChild(tile);
+            }
+        }
+        const hidden = document.createElement('div');
+        hidden.textContent = "Data Encrypted..."
+        hidden.classList.add('hidden-board');
+        board.appendChild(hidden)
+    }
+
     const refresh = (current,previous) => {
         const activeArea = document.getElementById('left');
         const reconArea = document.getElementById('right');
         activeArea.innerHTML = '';
         reconArea.innerHTML = '';
         drawActiveBoard(current.gameboard);
-        drawReconBoard(previous.gameboard)
+        if (!current.isComp) {
+            drawReconBoard(previous.gameboard);
+        } else {
+            drawHiddenReconBoard(previous.gameboard);
+            drawShips(current.gameboard,current.gameboard.id)
+        }
     }
+
+    const instantShowResult = (gameboard,coordscell) => {
+        const activeArea = document.getElementById('left');
+        activeArea.innerHTML = '';
+        drawActiveBoard(gameboard);
+    }
+    
+    const renderComputerMove = async (coords,gameboard) => {
+        const activeZone = document.getElementById("left").querySelector('div');
+        const row = activeZone.children[coords[1]];
+        const cell = row.children[coords[0]];
+        cell.classList.add('attack');
+        console.log(cell);
+        const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
+        removeAttackMarker();
+        //get result of attack
+        cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
+        const stallNextTurn = await stallComputerMove();
+        stallNextTurn();
+    }
+
+    const renderPlayerMove = async (coords,gameboard) => {
+        const activeZone = document.getElementById("left").querySelector('div');
+        const row = activeZone.children[coords[1]];
+        const cell = row.children[coords[0]];
+        cell.classList.add('attack');
+        console.log(cell);
+        const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
+        removeAttackMarker();
+        //get result of attack
+        cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
+        const showPlayersTurn = await showPlayerResult();
+        showPlayersTurn();
+    }
+
+    const showPlayerResult = async () => {
+        const playerResultTimer = await promisify(Game.turnOver, 2000);
+        return playerResultTimer
+    }
+    
+    const stallComputerMove = async () => {
+        const computerFinished = await promisify(Game.turnOver, 2000);
+        return computerFinished
+    }
+    
+    const promisify = (callback,timer) => {
+        return new Promise(resolve => setTimeout(() => resolve(callback), timer));
+    }
+    
 
     const drawShips = (gameboard,onboard) => {
         const ships = gameboard.getShips();
@@ -65,26 +142,6 @@ export default (() => {
             playzone.appendChild(drawShip(dimensions));
         })
     }
-
-    const renderComputerMove = async (coords) => {
-        const activeZone = document.getElementById("left").querySelector('div');
-        const row = activeZone.children[coords[1]];
-        const cell = row.children[coords[0]];
-        cell.classList.add('attack');
-        console.log(cell);
-        const showComputersTurn = await stallComputerMove();
-        showComputersTurn();
-    }
-
-    const stallComputerMove = async () => {
-        const computerFinished = await promisify(Game.turnOver, 2000);
-        return computerFinished
-    }
-
-    const promisify = (callback,timer) => {
-        return new Promise(resolve => setTimeout(() => resolve(callback), timer));
-    }
-
 
     const drawShip = (dimensions) => {
         const ship = document.createElement('div');
@@ -130,6 +187,7 @@ export default (() => {
         renderComputerMove,
         endGame,
         refresh,
+        renderPlayerMove,
         playerOne
     }
 })();

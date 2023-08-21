@@ -8,7 +8,7 @@ export const Player = (id,gameboard) => {
         if (!tile) return;
         try {
             gameboard.hitSquare(tile[0],tile[1]);
-            Game.turnOver();
+            Screen.renderPlayerMove(tile,gameboard);
         } catch(error) {
             console.log(error);
         }
@@ -81,7 +81,7 @@ export const Computer = (id,gameboard) => {
             coords = generateRandomCoords();
             moveTaken = tryMove(coords);
         }
-        Screen.renderComputerMove(coords);
+        Screen.renderComputerMove(coords,gameboard);
     }
 
     const educatedMove = () => {
