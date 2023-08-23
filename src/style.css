@@ -136,3 +136,7 @@ button.tile.attack {
 .placeholder:hover {
     background-color: rgb(255, 255, 255);
 }
+
+.out-of-bounds {
+    background-color: red;
+}
