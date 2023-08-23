@@ -7,26 +7,31 @@ export const PlacementBoard = (gameboard) => {
         carrier:{
             coords:[],
             horizontal:true,
+            length:5,
             placed:false,
         },
         battleship:{
             coords:[],
             horizontal:true,
+            length:4,
             placed:false,
         },
         cruiser:{
             coords:[],
             horizontal:true,
+            length:3,
             placed:false,
         },
         submarine:{
             coords:[],
             horizontal:true,
+            length:3,
             placed:false,
         },
         destroyer:{
             coords:[],
             horizontal:true,
+            length:2,
             placed:false,
         }
     }
@@ -55,6 +60,7 @@ export const PlacementBoard = (gameboard) => {
             for (let j = 0 ; j < size ; j++ ) {
                 const tile = document.createElement('button');
                 tile.classList.add('tile');
+                tile.id = String(j)+i;
                 tile.setAttribute('style','position:relative;')
                 tile.classList.add(gameboard.squareStatus(j,i));
                 rowContainer.appendChild(tile);
@@ -84,6 +90,7 @@ export const PlacementBoard = (gameboard) => {
     const makeShip = (button) => {
         const ship = Ship(button.id);
         ship.rotate();
+        console.log(findIllegalSquares(ship));
         return ship
     }
 
@@ -100,7 +107,8 @@ export const PlacementBoard = (gameboard) => {
         template.style.backgroundImage = `url(${SHIP_IMAGES[ship.name]}`;
         const board = document.getElementById('left');
         board.appendChild(template);
-        rotateShip(template,tiles[0].offsetWidth,ship);
+        renderShip(template,tiles[0].offsetWidth,ship);
+        console.log(ship.orientation);
         tiles.forEach((tile) => {
             if (isOutOfBounds(ship.orientation,ship.length,tile)) return;
             hoverImage(tile,template);
@@ -110,26 +118,34 @@ export const PlacementBoard = (gameboard) => {
         });
     }
 
+    const findIllegalSquares = (ship) => {
+        const illegalSquares = [];
+        // Find out of bound squares
+        for ( let i = 0 ; i < gameboard.getLength() ; i++ ) {
+            for ( let j = gameboard.getLength() - (ship.length - 1); j < gameboard.getLength() ; j++ ) {
+                const oobMove = ship.orientation ? [j,i] : [i,j] ;
+                illegalSquares.push(oobMove);
+            }
+        }
+        return illegalSquares ;
+    }
+
     const isOutOfBounds = (orientation,length, tile) => {
+        const tileLength = tile.parentNode.children.length;
         if (orientation) {
-            const row = tile.parentNode.children;
-            const index = Array.prototype.indexOf.call(row,tile);
-            if ((length + index) > row.length) return true;
+            if ((length + Number(tile.id.split('')[0])) > tileLength) return true;
             return false;
         } else {
-            const columns = tile.parentNode.parentNode.children;
-            const index = Array.prototype.indexOf.call(columns,tile.parentNode);
-            if ((length + index) > columns.length) return true;
+            if ((length + Number(tile.id.split('')[1])) > tileLength) return true;
             return false;
         }
     }
 
-    const rotateShip = (image,unit,ship) => {
+    const renderShip = (image,unit,ship) => {
         const width = ship.orientation ? (unit*ship.length)+'px' : unit+'px';
         const height = ship.orientation ? unit +'px': (unit*ship.length)+'px';
         image.style.width = width;
         image.style.height = height;
-        ship.rotate();
     }
 
     const moveShip = (template,ship) => {
@@ -150,7 +166,6 @@ export const PlacementBoard = (gameboard) => {
         tiles.forEach((tile) => {
             tile.replaceWith(tile.cloneNode(true));
         })
-        console.log(checkForUnplaced());
         if (!checkForUnplaced()) {
             renderSubmitButton();
         } else {
