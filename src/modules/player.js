@@ -1,4 +1,5 @@
 import Screen from "./screen.js";
+import { Ship } from "./ship.js";
 
 export const Player = (id,gameboard) => {
 
@@ -30,6 +31,16 @@ export const Computer = (id,gameboard) => {
 
     let currentSuccess = {}
 
+    const makeShips = () => {
+        return {
+            carrier: Ship('carrier'),
+            battleship: Ship('battleship'),
+            cruiser: Ship('cruiser'),
+            submarine: Ship('submarine'),
+            destroyer: Ship('destroyer'),
+        }
+    }
+
     const SQUARES_AROUND = (x,y) => {
         return {
             up:[x,y-1],
@@ -37,6 +48,25 @@ export const Computer = (id,gameboard) => {
             down:[x,y+1],
             left:[x-1,y]
         }
+    }
+
+    const place = () => {
+        const ships = makeShips();
+        Object.keys(ships).forEach((ship) => {
+            let placed = false;
+            while (!placed) {
+                let x = Math.floor(Math.random() * gameboard.getLength());
+                let y = Math.floor(Math.random() * gameboard.getLength());
+                let orientation = Math.floor(Math.random() *2) ? true : false ;
+                try {
+                    gameboard.placeShip(ships[ship],x,y,orientation);
+                    placed = true;
+                } catch(err) {
+                    console.log(err);
+                    console.log("Cannot place at: ", x, y, " with ", orientation," orientation.");
+                }
+            }
+        })
     }
 
         
@@ -94,6 +124,7 @@ export const Computer = (id,gameboard) => {
         isComp:true,
         generateRandomCoords,
         tryMove,
-        makeMove
+        makeMove,
+        place
     }
 }

@@ -5,6 +5,7 @@ import { Gameboard } from "./modules/gameboard.js";
 import './style.css';
 
 export const Game = (() => {
+    let currentPlayer
     const playerOneBoard = Gameboard(10, "player-one");
     const playerTwoBoard = Gameboard(10, "player-two");
     const playerOne = Player("player-one",playerTwoBoard);
@@ -12,8 +13,9 @@ export const Game = (() => {
     playerOneBoard.opponent = playerTwo;
     playerTwoBoard.opponent = playerOne;
    
-    const initialiseGame = (playerOne) => {
-        return playerOne
+    const initialiseGame = () => {
+        currentPlayer = playerOne;
+        nextPlayer();
     }
 
     const turnOver = () => {
@@ -33,12 +35,24 @@ export const Game = (() => {
         }
     }
 
-    const shipPlacement = (player) => {
-        const placement = PlacementBoard(player.gameboard);
+    const shipPlacement = (player, cb) => {
+        const placement = PlacementBoard(player.gameboard, cb);
         placement.renderPlacementScreen();
     }
 
-    shipPlacement(playerOne);
+    const computerPlace = (player, cb) => {
+        console.log(player);
+        player.place();
+        cb();
+    }
+
+    const startGame = (playerOne, playerTwo) => {
+        console.log(playerOne,playerTwo)
+        const afterPlace = playerTwo.isComp ? computerPlace : shipPlacement ;
+        shipPlacement(playerOne, () => afterPlace(playerTwo, initialiseGame));
+    }
+
+    startGame(playerOne,playerTwo);
 
     // let currentPlayer = initialiseGame(playerOne);
 

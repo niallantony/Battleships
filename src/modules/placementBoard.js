@@ -2,7 +2,7 @@ import Screen from "./screen.js"
 import { Ship } from "./ship.js"
 import { SHIP_IMAGES } from "./screen.js"
 
-export const PlacementBoard = (gameboard) => {
+export const PlacementBoard = (gameboard, onFinish) => {
     let placing = false;
     const shipBar = document.getElementById('ship-bar');
 
@@ -77,12 +77,15 @@ export const PlacementBoard = (gameboard) => {
     }
 
     const drawNextShipButton = () => {
-        const button = makeNextShipButton();
-        button.addEventListener('click',() => {
+        const nextShip = makeNextShipButton();
+        const button = nextShip ? nextShip : renderSubmitButton();
+        if (nextShip) {button.addEventListener('click',() => {
             shipBar.removeChild(button);
             const ship = makeShip(button);
             shipPlacement(ship,ships[ship]);
-        });
+        });} else {
+            button.addEventListener('click', submit);
+        }
         shipBar.appendChild(button);
     }
 
@@ -102,7 +105,7 @@ export const PlacementBoard = (gameboard) => {
             button.textContent = buttonText;
             return button;
         }   
-        return renderSubmitButton();
+        return false;
     }
 
     const makeShip = (button) => {
@@ -265,6 +268,11 @@ export const PlacementBoard = (gameboard) => {
         submitButton.classList.add('submit-placement');
         submitButton.textContent = 'Submit';
         return submitButton
+    }
+
+    const submit = () => {
+        setShips();
+        onFinish();
     }
 
     const TEMPconsoleIllegalTiles = (illegal) => {

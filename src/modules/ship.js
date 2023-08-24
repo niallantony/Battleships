@@ -27,8 +27,11 @@ export const Ship = (name = null) => {
         hit,
         isSunk,
         position:[],
-        get orientation() {
-            return orientation
+        get orientation () {
+            return orientation;
+        },
+        set orientation(or) {
+            orientation = or;
         },
         rotate,
         get name() {
