@@ -20,7 +20,7 @@ export const Ship = (name = null) => {
     }
 
     const isSunk = () => {
-        return (hitCounter >= length)
+        return (hitCounter >= SHIP_SIZES[name])
     }
 
     return {

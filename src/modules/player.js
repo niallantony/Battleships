@@ -4,12 +4,12 @@ import { Ship } from "./ship.js";
 export const Player = (id,gameboard) => {
 
     
-    const makeMove = (tile) => {
+    const makeMove = (tile, opponentBoard) => {
         if (!tile) return;
         try {
-            const move = gameboard.hitSquare(tile[0],tile[1]);
+            const move = opponentBoard.hitSquare(tile[0],tile[1]);
             if (typeof move === 'object' && move.isSunk()) Screen.sunkShip(move); 
-            Screen.renderPlayerMove(tile,gameboard);
+            Screen.renderPlayerMove(tile,opponentBoard);
         } catch(error) {
             console.log(error);
         }
@@ -73,7 +73,7 @@ export const Computer = (id,gameboard) => {
     const playTile = (tile) => {
         if (!tile) return;
         try {
-            const hit = gameboard.hitSquare(tile[0],tile[1]);
+            const hit = gameboard.opponent.gameboard.hitSquare(tile[0],tile[1]);
             if (hit === true) {
                 return 'miss';
             } else {
@@ -104,14 +104,14 @@ export const Computer = (id,gameboard) => {
     const makeMove = () => {
         let moveTaken = false;
         let coords;
-        if (!gameboard.checkForEmpty()) {
+        if (!gameboard.opponent.gameboard.checkForEmpty()) {
             throw new Error("No More Space");
         }
         while (!moveTaken) {
             coords = generateRandomCoords();
             moveTaken = tryMove(coords);
         }
-        Screen.renderComputerMove(coords,gameboard);
+        Screen.renderComputerMove(coords,gameboard.opponent.gameboard);
     }
 
     const educatedMove = () => {

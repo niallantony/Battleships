@@ -273,6 +273,7 @@ export const PlacementBoard = (gameboard, onFinish) => {
     const submit = () => {
         setShips();
         onFinish();
+        shipBar.innerHTML = '';
     }
 
     const TEMPconsoleIllegalTiles = (illegal) => {

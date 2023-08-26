@@ -8,13 +8,14 @@ export const Game = (() => {
     let currentPlayer
     const playerOneBoard = Gameboard(10, "player-one");
     const playerTwoBoard = Gameboard(10, "player-two");
-    const playerOne = Player("player-one",playerTwoBoard);
-    const playerTwo = Computer("player-two",playerOneBoard);
+    const playerOne = Player("player-one",playerOneBoard);
+    const playerTwo = Computer("player-two",playerTwoBoard);
     playerOneBoard.opponent = playerTwo;
-    playerTwoBoard.opponent = playerOne;
+    playerTwoBoard.opponent = playerOne
    
     const initialiseGame = () => {
-        currentPlayer = playerOne;
+        currentPlayer = playerTwo;
+        Screen.onNext = nextPlayer;
         nextPlayer();
     }
 
@@ -36,6 +37,7 @@ export const Game = (() => {
     }
 
     const shipPlacement = (player, cb) => {
+        // const opponentBoard = player === playerOne ? playerTwo.gameboard : playerOne.gameboard;
         const placement = PlacementBoard(player.gameboard, cb);
         placement.renderPlacementScreen();
     }
@@ -47,7 +49,6 @@ export const Game = (() => {
     }
 
     const startGame = (playerOne, playerTwo) => {
-        console.log(playerOne,playerTwo)
         const afterPlace = playerTwo.isComp ? computerPlace : shipPlacement ;
         shipPlacement(playerOne, () => afterPlace(playerTwo, initialiseGame));
     }

@@ -7,8 +7,9 @@ export const SHIP_IMAGES = {
 
 export default (() => {
 
-
+    //what is this doing?
     let playerOne = true;
+    let onNext;
 
     const drawActiveBoard = (gameboard) => {
         const zoneDom = document.getElementById("left")
@@ -29,7 +30,7 @@ export default (() => {
         }
         board.addEventListener("click", e => {
             const tile = getTarget(e.target.closest('button'));
-            gameboard.opponent.makeMove(tile)
+            gameboard.opponent.makeMove(tile, gameboard)
         })
     }
 
@@ -81,12 +82,12 @@ export default (() => {
         const reconArea = document.getElementById('right');
         activeArea.innerHTML = '';
         reconArea.innerHTML = '';
-        drawActiveBoard(current.gameboard);
+        drawActiveBoard(previous.gameboard);
         if (!current.isComp) {
-            drawReconBoard(previous.gameboard);
+            drawReconBoard(current.gameboard);
         } else {
-            drawHiddenReconBoard(previous.gameboard);
-            drawShips(current.gameboard,current.gameboard.id)
+            drawHiddenReconBoard(current.gameboard);
+            drawShips(previous.gameboard,previous.gameboard.id)
         }
     }
 
@@ -129,12 +130,12 @@ export default (() => {
     }
 
     const showPlayerResult = async () => {
-        const playerResultTimer = await promisify(f(), 2000);
+        const playerResultTimer = await promisify(onNext, 2000);
         return playerResultTimer
     }
     
     const stallComputerMove = async () => {
-        const computerFinished = await promisify(f(), 2000);
+        const computerFinished = await promisify(onNext, 2000);
         return computerFinished
     }
     
@@ -200,6 +201,9 @@ export default (() => {
         refresh,
         sunkShip,
         renderPlayerMove,
-        playerOne
+        playerOne,
+        set onNext(nextTurn) {
+            onNext = nextTurn;
+        },
     }
 })();
