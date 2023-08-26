@@ -15,7 +15,7 @@ export const Game = (() => {
    
     const initialiseGame = () => {
         currentPlayer = playerTwo;
-        Screen.onNext = nextPlayer;
+        Screen.onNext = turnOver;
         nextPlayer();
     }
 
@@ -55,27 +55,6 @@ export const Game = (() => {
 
     startGame(playerOne,playerTwo);
 
-    // let currentPlayer = initialiseGame(playerOne);
-
-    // const playerTanker = Ship(5, 'Tanker');
-    // const playerDestroyer = Ship(3, 'Destroyer');
-    // const playerCruiser = Ship(4, 'Cruiser');
-
-    // const computerTanker = Ship(5, 'Tanker');
-    // const computerDestroyer = Ship(3, 'Destroyer');
-    // const computerCruiser = Ship(4, 'Cruiser');
-
-    // playerOneBoard.placeShip(playerTanker,1,1,true);
-    // playerOneBoard.placeShip(playerDestroyer,3,4,false);
-    // playerOneBoard.placeShip(playerCruiser,0,9,true);
-    
-    // playerTwoBoard.placeShip(computerTanker,9,2,false);
-    // playerTwoBoard.placeShip(computerDestroyer,5,6,false);
-    // playerTwoBoard.placeShip(computerCruiser,0,0,true);
-
-    // Screen.refresh(playerOne,playerTwo)
-
     return {
-        turnOver,
     }
 })();
