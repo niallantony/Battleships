@@ -29,7 +29,7 @@ export const Computer = (id,gameboard) => {
 
     let recentHit = false;
 
-    let currentSuccess = {}
+    let currentSuccess = [];
 
     const makeShips = () => {
         return {
@@ -91,16 +91,6 @@ export const Computer = (id,gameboard) => {
         return [ranX,ranY];
     }
 
-    const tryMove = (coords) => {
-            const result = playTile(coords);
-            if (typeof result === 'object') {
-                currentSuccess = Object.assign({coords:coords},result);
-                console.log(currentSuccess);
-                recentHit = true;
-            }
-            return result;
-    }
-
     const makeMove = () => {
         let moveTaken = false;
         let coords;
@@ -109,13 +99,66 @@ export const Computer = (id,gameboard) => {
         }
         while (!moveTaken) {
             coords = generateRandomCoords();
-            moveTaken = tryMove(coords);
+            moveTaken = playTile(coords);
+        }
+        if (typeof moveTaken === 'object') {
+            populateCurrentSuccess(coords,moveTaken);
         }
         Screen.renderComputerMove(coords,gameboard.opponent.gameboard);
     }
 
-    const educatedMove = () => {
+    const targetShip = (coords, ship) => {
+        const potentialMoves = [[0,1],[0,-1],[1,0],[-1,0]];
 
+        const nextMove = () => {
+            const heading = potentialMoves.pop();
+            return  {
+                    attack:[[coords[0] + heading[0]],[coords[1] + heading[1]]],
+                    heading:heading
+                    }
+        };
+
+        const recalculatePotentialMoves = () => {
+            const newHeading = [0,0];
+            const axis = heading[0] != 0 ? 0 : 1 ;
+            newHeading[axis] = heading[axis] > 0 ? heading[axis]+1 : heading[axis]-1;
+            const stillValid = potentialMoves.filter(heading => heading[axis] != 0);
+            stillValid.push(newHeading);
+            potentialMoves = stillValid;
+        };
+
+        return {
+            coords,
+            target:ship,
+            potentialMoves,
+            nextMove,
+            recalculatePotentialMoves
+            }
+    }
+
+
+    const populateCurrentSuccess = (coords, ship) => {
+        currentSuccess.push(targetShip(coords,ship));
+    }
+
+    const educatedMove = () => {
+        let moveTaken = false;
+        const currentTarget = currentSuccess[0];
+        if (!gameboard.opponent.gameboard.checkForEmpty()) {
+            throw new Error("No More Space");
+        }
+        while (!moveTaken) {
+            coords = currentTarget.nextMove();
+            moveTaken = playTile(coords.attack);
+        }
+        if (typeof moveTaken === 'object' && moveTaken.isSunk) {
+            currentSuccess.shift();
+        } else if (typeof moveTaken === 'object' && moveTaken === currentTarget.target) {
+            target.recalculatePotentialMoves(coords.heading,coords.attack)
+        } else if (typeof moveTaken === 'object') {
+            populateCurrentSuccess(coords.attack,moveTaken)
+        }
+        Screen.renderComputerMove(coords.attack,gameboard.opponent,gameboard);
     }
 
     return {
