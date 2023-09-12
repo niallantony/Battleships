@@ -6,10 +6,8 @@ export const SHIP_IMAGES = {
 }
 
 export default (() => {
-
-    //what is this doing?
-    let playerOne = true;
     let onNext;
+    let moveReady = true;
 
     const drawActiveBoard = (gameboard) => {
         const zoneDom = document.getElementById("left")
@@ -29,8 +27,14 @@ export default (() => {
             }
         }
         board.addEventListener("click", e => {
-            const tile = getTarget(e.target.closest('button'));
-            gameboard.opponent.makeMove(tile, gameboard)
+            try {
+                const tile = getTarget(e.target.closest('button'));
+                if (!moveReady) return;
+                gameboard.opponent.makeMove(tile, gameboard)
+                moveReady = false;
+            } catch(err) {
+                console.log(err);
+            }
         })
     }
 
@@ -90,14 +94,6 @@ export default (() => {
             drawShips(previous.gameboard,previous.gameboard.id)
         }
     }
-
-    // Redundant... delete?
-    //
-    // const instantShowResult = (gameboard,coordscell) => {
-    //     const activeArea = document.getElementById('left');
-    //     activeArea.innerHTML = '';
-    //     drawActiveBoard(gameboard);
-    // }
     
     const renderComputerMove = async (coords,gameboard) => {
         const activeZone = document.getElementById("left").querySelector('div');
@@ -110,6 +106,7 @@ export default (() => {
         cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
         const stallNextTurn = await stallComputerMove();
         stallNextTurn();
+        moveReady = true;
     }
 
     const renderPlayerMove = async (coords,gameboard) => {
@@ -123,6 +120,7 @@ export default (() => {
         cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
         const showPlayersTurn = await showPlayerResult();
         showPlayersTurn();
+        moveReady = true;
     }
 
     const sunkShip = (ship) => {
@@ -136,6 +134,7 @@ export default (() => {
     
     const stallComputerMove = async () => {
         const computerFinished = await promisify(onNext, 2000);
+        moveReady = true;
         return computerFinished
     }
     
@@ -201,7 +200,6 @@ export default (() => {
         refresh,
         sunkShip,
         renderPlayerMove,
-        playerOne,
         set onNext(nextTurn) {
             onNext = nextTurn;
         },
