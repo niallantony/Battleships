@@ -9,6 +9,37 @@ export default (() => {
     let onNext;
     let moveReady = true;
 
+    const drawMainMenu = () => {
+        const body = document.querySelector('body');
+        const menuPan = document.createElement('div');
+        const gameTitle = document.createElement('div');
+        gameTitle.classList.add('game-title');
+        gameTitle.textContent = 'Battleships!'
+        menuPan.appendChild(gameTitle);
+        body.appendChild(menuPan);
+        const buttonBar = document.createElement('div');
+        const startSingle = document.createElement('button');
+        const startDouble = document.createElement('button');
+        buttonBar.appendChild(startSingle,startDouble);
+        menuPan.appendChild(buttonBar);
+        startSingle.textContent = 'Single Player';
+        startDouble.textContent = 'Two Player';
+    }
+
+    const drawDefault = () => {
+        const body = document.querySelector('body');
+        const gamearea = document.createElement('div');
+        const left = document.createElement('div');
+        const right = document.createElement('div');
+        const shipbar = document.createElement('div');
+        body.appendChild(gamearea, shipbar);
+        gamearea.appendChild(left,right);
+        gamearea.id = 'gamearea';
+        left.id = 'left';
+        right.id = 'right';
+        shipbar.id = 'shipbar';
+    }
+
     const drawActiveBoard = (gameboard) => {
         const zoneDom = document.getElementById("left")
         const board = document.createElement('div');
@@ -30,12 +61,30 @@ export default (() => {
             try {
                 const tile = getTarget(e.target.closest('button'));
                 if (!moveReady) return;
-                gameboard.opponent.makeMove(tile, gameboard)
-                moveReady = false;
+                moveReady = gameboard.opponent.makeMove(tile, gameboard)
             } catch(err) {
                 console.log(err);
             }
         })
+    }
+
+    const drawDummyActiveBoard = (gameboard) => {
+        const zoneDom = document.getElementById("left")
+        const board = document.createElement('div');
+        board.id = gameboard.id;
+        zoneDom.appendChild(board);
+        const size = gameboard.getLength();
+        for (let i = 0 ; i < size ; i++ ) {
+            const rowContainer = document.createElement('div');
+            rowContainer.classList.add('row');
+            board.appendChild(rowContainer);
+            for (let j = 0 ; j < size ; j++ ) {
+                const tile = document.createElement('button');
+                tile.classList.add('tile');
+                tile.classList.add(gameboard.squareStatus(j,i));
+                rowContainer.appendChild(tile);
+            }
+        }
     }
 
     const drawReconBoard = (gameboard) => {
@@ -86,16 +135,18 @@ export default (() => {
         const reconArea = document.getElementById('right');
         activeArea.innerHTML = '';
         reconArea.innerHTML = '';
-        drawActiveBoard(previous.gameboard);
         if (!current.isComp) {
+            drawActiveBoard(previous.gameboard);
             drawReconBoard(current.gameboard);
         } else {
+            drawDummyActiveBoard(previous.gameboard);
             drawHiddenReconBoard(current.gameboard);
             drawShips(previous.gameboard,previous.gameboard.id)
         }
     }
     
     const renderComputerMove = async (coords,gameboard) => {
+        moveReady = false;
         const activeZone = document.getElementById("left").querySelector('div');
         const row = activeZone.children[coords[1]];
         const cell = row.children[coords[0]];
@@ -106,7 +157,6 @@ export default (() => {
         cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
         const stallNextTurn = await stallComputerMove();
         stallNextTurn();
-        moveReady = true;
     }
 
     const renderPlayerMove = async (coords,gameboard) => {
@@ -200,6 +250,8 @@ export default (() => {
         refresh,
         sunkShip,
         renderPlayerMove,
+        drawMainMenu,
+        drawDefault,
         set onNext(nextTurn) {
             onNext = nextTurn;
         },

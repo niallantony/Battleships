@@ -6,13 +6,36 @@ import './style.css';
 
 export const Game = (() => {
     let currentPlayer
+    const players = [];
     const playerOneBoard = Gameboard(10, "player-one");
     const playerTwoBoard = Gameboard(10, "player-two");
     const playerOne = Player("player-one",playerOneBoard);
     const playerTwo = Computer("player-two",playerTwoBoard);
     playerOneBoard.opponent = playerTwo;
-    playerTwoBoard.opponent = playerOne
+    playerTwoBoard.opponent = playerOne;
    
+    const singleInitialise = (name) => {
+        const playerOneBoard = Gameboard(10, name);
+        const playerTwoBoard = Gameboard(10, "Computer");
+        const playerOne = Player(name, playerOneBoard);
+        const playerTwo = Computer(name, "Computer");
+        players.push(playerOne);
+        players.push(playerTwo);
+        playerOneBoard.opponent = playerTwo;
+        playerTwoBoard.opponent = playerOne;
+        startGame(playerOne,playerTwo);
+    }
+
+    const doubleInitialise = (name, secondname) => {
+        const playerOneBoard = Gameboard(10, name);
+        const playerTwoBoard = Gameboard(10, secondname);
+        const playerOne = Player(name, playerOneBoard);
+        const playerTwo = Player(secondname, playerTwoBoard);
+        playerOneBoard.opponent = playerTwo;
+        playerTwoBoard.opponent = playerOne;
+        startGame(playerOne,playerTwo);
+    }
+
     const initialiseGame = () => {
         currentPlayer = playerTwo;
         Screen.onNext = turnOver;
