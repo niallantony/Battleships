@@ -20,6 +20,7 @@ export const Player = (id,gameboard) => {
 
     return {
         playing: false,
+        isComp: false,
         id,
         gameboard,
         makeMove
@@ -92,7 +93,6 @@ export const Computer = (id,gameboard) => {
     }
 
     const makeMove = () => {
-        console.log("Current Success: ", currentSuccess);
         if (currentSuccess.length) {
             educatedMove();
         } else {
@@ -122,8 +122,6 @@ export const Computer = (id,gameboard) => {
         const nextMove = () => {
             const randomChoice = Math.floor(Math.random() * potentialMoves.length);
             const heading = potentialMoves.splice(randomChoice,1).flat();
-            console.table(potentialMoves);
-            console.log("heading: ", heading);
             const move = [coords[0] + heading[0],coords[1] + heading[1]];
             return  {
                     attack:move,
@@ -132,7 +130,6 @@ export const Computer = (id,gameboard) => {
         };
 
         const recalculatePotentialMoves = (heading,attack) => {
-            console.log("Recalculating... ", heading, attack);
             const newHeading = [coords[0] - attack[0],coords[1] - attack[1]];
             const axis = heading[0] != 0 ? 0 : 1 ;
             newHeading[axis] = heading[axis] > 0 ? heading[axis]+1 : heading[axis]-1;
@@ -140,7 +137,6 @@ export const Computer = (id,gameboard) => {
             stillValid.push(newHeading);
             potentialMoves.length = 0;
             stillValid.forEach(coord => potentialMoves.push(coord));
-            console.table(potentialMoves);
         };
 
         return {
@@ -158,7 +154,6 @@ export const Computer = (id,gameboard) => {
     }
 
     const educatedMove = () => {
-        console.log("Making educated move...")
         let moveTaken = false;
         let coords;
         const currentTarget = currentSuccess[0];
@@ -170,7 +165,6 @@ export const Computer = (id,gameboard) => {
             console.log("Playing : ",coords);
             moveTaken = playTile(coords.attack);
         }
-        console.log(moveTaken);
         if (typeof moveTaken === 'object' && moveTaken.isSunk()) {
             console.log("Deleting: ", currentSuccess[0]);
             currentSuccess.shift();

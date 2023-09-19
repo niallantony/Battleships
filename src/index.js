@@ -7,18 +7,12 @@ import './style.css';
 export const Game = (() => {
     let currentPlayer
     const players = [];
-    const playerOneBoard = Gameboard(10, "player-one");
-    const playerTwoBoard = Gameboard(10, "player-two");
-    const playerOne = Player("player-one",playerOneBoard);
-    const playerTwo = Computer("player-two",playerTwoBoard);
-    playerOneBoard.opponent = playerTwo;
-    playerTwoBoard.opponent = playerOne;
    
     const singleInitialise = (name) => {
         const playerOneBoard = Gameboard(10, name);
         const playerTwoBoard = Gameboard(10, "Computer");
         const playerOne = Player(name, playerOneBoard);
-        const playerTwo = Computer(name, "Computer");
+        const playerTwo = Computer(name, playerTwoBoard);
         players.push(playerOne);
         players.push(playerTwo);
         playerOneBoard.opponent = playerTwo;
@@ -26,18 +20,21 @@ export const Game = (() => {
         startGame(playerOne,playerTwo);
     }
 
-    const doubleInitialise = (name, secondname) => {
+    const doubleInitialise = (name, secondName) => {
         const playerOneBoard = Gameboard(10, name);
-        const playerTwoBoard = Gameboard(10, secondname);
+        const playerTwoBoard = Gameboard(10, secondName);
         const playerOne = Player(name, playerOneBoard);
-        const playerTwo = Player(secondname, playerTwoBoard);
+        const playerTwo = Player(secondName, playerTwoBoard);
+        players.push(playerOne);
+        players.push(playerTwo);
         playerOneBoard.opponent = playerTwo;
         playerTwoBoard.opponent = playerOne;
-        startGame(playerOne,playerTwo);
+        startGame();
     }
 
     const initialiseGame = () => {
-        currentPlayer = playerTwo;
+        Screen.gameScreenSetup();
+        currentPlayer = players[1];
         Screen.onNext = turnOver;
         nextPlayer();
     }
@@ -52,7 +49,7 @@ export const Game = (() => {
 
     const nextPlayer = () => {
         const previous = currentPlayer;
-        currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne ;
+        currentPlayer = currentPlayer === players[0] ? players[1] : players[0] ;
         Screen.refresh(currentPlayer,previous);
         if (currentPlayer.isComp) {
             currentPlayer.makeMove();
@@ -61,6 +58,7 @@ export const Game = (() => {
 
     const shipPlacement = (player, cb) => {
         // const opponentBoard = player === playerOne ? playerTwo.gameboard : playerOne.gameboard;
+        Screen.shipScreenSetup();
         const placement = PlacementBoard(player.gameboard, cb);
         placement.renderPlacementScreen();
     }
@@ -71,13 +69,11 @@ export const Game = (() => {
         cb();
     }
 
-    const startGame = (playerOne, playerTwo) => {
-        const afterPlace = playerTwo.isComp ? computerPlace : shipPlacement ;
-        shipPlacement(playerOne, () => afterPlace(playerTwo, initialiseGame));
+    const startGame = () => {
+        const afterPlace = players[1].isComp ? computerPlace : shipPlacement ;
+        shipPlacement(players[0], () => afterPlace(players[1], initialiseGame));
     }
 
-    startGame(playerOne,playerTwo);
+    Screen.drawMainMenu(singleInitialise,doubleInitialise);
 
-    return {
-    }
 })();

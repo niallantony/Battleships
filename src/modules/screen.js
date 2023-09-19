@@ -9,7 +9,7 @@ export default (() => {
     let onNext;
     let moveReady = true;
 
-    const drawMainMenu = () => {
+    const drawMainMenu = (singleInitialise, doubleInitialise) => {
         const body = document.querySelector('body');
         const menuPan = document.createElement('div');
         const gameTitle = document.createElement('div');
@@ -20,24 +20,74 @@ export default (() => {
         const buttonBar = document.createElement('div');
         const startSingle = document.createElement('button');
         const startDouble = document.createElement('button');
-        buttonBar.appendChild(startSingle,startDouble);
+        buttonBar.appendChild(startSingle);
+        buttonBar.appendChild(startDouble);
         menuPan.appendChild(buttonBar);
         startSingle.textContent = 'Single Player';
         startDouble.textContent = 'Two Player';
+        startSingle.addEventListener('click',() => getName(singleInitialise));
+        startDouble.addEventListener('click',() => getName((name) => {
+            getName((secondName) => {
+                doubleInitialise(name,secondName);
+            })
+        }));
     }
 
-    const drawDefault = () => {
+    const getName = (cb) => {
+        console.log("getting name")
+        const nameDialog = document.createElement('dialog');
+        nameDialog.classList.add('get-name');
         const body = document.querySelector('body');
-        const gamearea = document.createElement('div');
+        body.appendChild(nameDialog);
+        nameDialog.show();
+        const nameForm = document.createElement('form');
+        const nameLabel = document.createElement('label');
+        nameLabel.setAttribute('for','name-input');
+        nameLabel.textContent = 'Admiral name: '
+        const nameInput = document.createElement('input');
+        nameInput.id = 'name-input';
+        const nameSubmit = document.createElement('button');
+        nameSubmit.textContent = "Submit";
+        nameDialog.appendChild(nameForm);
+        nameForm.appendChild(nameInput);
+        nameForm.appendChild(nameSubmit);
+        nameSubmit.classList.add('get-name-submit');
+        nameSubmit.addEventListener('click',(e) => {
+            e.preventDefault();
+            cb(nameInput.value);
+            nameDialog.parentNode.removeChild(nameDialog);
+        })
+    }   
+
+    const shipScreenSetup = () => {
+        const body = document.querySelector('body');
+        body.innerHTML = '';
         const left = document.createElement('div');
-        const right = document.createElement('div');
-        const shipbar = document.createElement('div');
-        body.appendChild(gamearea, shipbar);
-        gamearea.appendChild(left,right);
-        gamearea.id = 'gamearea';
         left.id = 'left';
+        const gamearea = document.createElement('div');
+        gamearea.id = 'gamearea';
+        body.appendChild(gamearea);
+        gamearea.appendChild(left);
+        const shipbar = document.createElement('div');
+        shipbar.id = 'ship-bar';
+        body.appendChild(shipbar);
+    }
+
+    const gameScreenSetup = () => {
+        const body = document.querySelector('body');
+        body.innerHTML = '';
+        const left = document.createElement('div');
+        left.id = 'left';
+        const right = document.createElement('div');
         right.id = 'right';
-        shipbar.id = 'shipbar';
+        const gamearea = document.createElement('div');
+        gamearea.id = 'gamearea';
+        body.appendChild(gamearea);
+        gamearea.appendChild(left);
+        gamearea.appendChild(right);
+        const shipbar = document.createElement('div');
+        shipbar.id = 'ship-bar';
+        body.appendChild(shipbar);
     }
 
     const drawActiveBoard = (gameboard) => {
@@ -244,6 +294,8 @@ export default (() => {
 
     return {
         drawShips,
+        gameScreenSetup,
+        shipScreenSetup,
         renderComputerMove,
         endGame,
         getTarget,
@@ -251,7 +303,6 @@ export default (() => {
         sunkShip,
         renderPlayerMove,
         drawMainMenu,
-        drawDefault,
         set onNext(nextTurn) {
             onNext = nextTurn;
         },
