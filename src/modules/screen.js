@@ -26,15 +26,17 @@ export default (() => {
         startSingle.textContent = 'Single Player';
         startDouble.textContent = 'Two Player';
         startSingle.addEventListener('click',() => getName(singleInitialise));
-        startDouble.addEventListener('click',() => getName((name) => {
-            getName((secondName) => {
-                doubleInitialise(name,secondName);
+        startDouble.addEventListener('click',() => {
+            getName((name) => {
+                getName((secondName) => {
+                    doubleInitialise(name,secondName);
+                }, 'two');
             })
-        }));
+        });
     }
 
-    const getName = (cb) => {
-        console.log("getting name")
+    const getName = (cb, string = 'one') => {
+        console.log("getting name");
         const nameDialog = document.createElement('dialog');
         nameDialog.classList.add('get-name');
         const body = document.querySelector('body');
@@ -43,12 +45,13 @@ export default (() => {
         const nameForm = document.createElement('form');
         const nameLabel = document.createElement('label');
         nameLabel.setAttribute('for','name-input');
-        nameLabel.textContent = 'Admiral name: '
+        nameLabel.textContent = `Admiral ${string} name: `
         const nameInput = document.createElement('input');
         nameInput.id = 'name-input';
         const nameSubmit = document.createElement('button');
         nameSubmit.textContent = "Submit";
         nameDialog.appendChild(nameForm);
+        nameForm.appendChild(nameLabel);
         nameForm.appendChild(nameInput);
         nameForm.appendChild(nameSubmit);
         nameSubmit.classList.add('get-name-submit');
@@ -71,6 +74,26 @@ export default (() => {
         const shipbar = document.createElement('div');
         shipbar.id = 'ship-bar';
         body.appendChild(shipbar);
+    }
+
+    const showReadyScreen = (player,next) => {
+        const body = document.querySelector('body');
+        const readyDialog = document.createElement('dialog');
+        const readyText = document.createElement('div');
+        const readyButton = document.createElement('button');
+        readyDialog.classList.add('ready-dialog');
+        readyText.classList.add('ready-text');
+        readyButton.classList.add('ready-button');
+        readyText.textContent = `${player.id}'s turn!`;
+        readyButton.textContent = 'Ready';
+        readyButton.addEventListener('click', () => {
+            readyDialog.parentNode.removeChild(readyDialog);
+            refresh(next,player);
+        });
+        readyDialog.appendChild(readyText)
+        readyDialog.appendChild(readyButton)
+        body.appendChild(readyDialog)
+        readyDialog.showModal();
     }
 
     const gameScreenSetup = () => {
@@ -303,6 +326,7 @@ export default (() => {
         sunkShip,
         renderPlayerMove,
         drawMainMenu,
+        showReadyScreen,
         set onNext(nextTurn) {
             onNext = nextTurn;
         },

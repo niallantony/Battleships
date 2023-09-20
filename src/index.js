@@ -50,9 +50,11 @@ export const Game = (() => {
     const nextPlayer = () => {
         const previous = currentPlayer;
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0] ;
-        Screen.refresh(currentPlayer,previous);
         if (currentPlayer.isComp) {
+            Screen.refresh(currentPlayer,previous);
             currentPlayer.makeMove();
+        } else {
+            Screen.showReadyScreen(currentPlayer,previous);
         }
     }
 

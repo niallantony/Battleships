@@ -140,3 +140,7 @@ button.tile.attack {
 .out-of-bounds {
     background-color: red;
 }
+
+.ready-dialog::backdrop {
+    background-color: #000000;
+}
