@@ -8,7 +8,7 @@ export const Player = (id,gameboard) => {
         if (!tile) throw new Error("Not a tile.");
         try {
             const move = opponentBoard.hitSquare(tile[0],tile[1]);
-            if (typeof move === 'object' && move.isSunk()) Screen.sunkShip(move); 
+            if (typeof move === 'object' && move.isSunk()) Screen.sunkShip(move, opponentBoard.id); 
             Screen.renderPlayerMove(tile,opponentBoard);
             return false;
         } catch(error) {
@@ -42,15 +42,6 @@ export const Computer = (id,gameboard) => {
         }
     }
 
-    const SQUARES_AROUND = (x,y) => {
-        return {
-            up:[x,y-1],
-            right:[x+1,y],
-            down:[x,y+1],
-            left:[x-1,y]
-        }
-    }
-
     const place = () => {
         const ships = makeShips();
         Object.keys(ships).forEach((ship) => {
@@ -75,6 +66,7 @@ export const Computer = (id,gameboard) => {
         if (!tile) return;
         try {
             const hit = gameboard.opponent.gameboard.hitSquare(tile[0],tile[1]);
+            if (typeof hit === 'object' && hit.isSunk()) Screen.sunkShip(hit, gameboard.opponent.id); 
             if (hit === true) {
                 return 'miss';
             } else {

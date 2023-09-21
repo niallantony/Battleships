@@ -46,10 +46,6 @@ export const PlacementBoard = (gameboard, onFinish) => {
         })
     }
 
-    const checkForUnplaced = () => {
-        return Object.keys(ships).some((ship) => {return !ships[ship].placed})
-    }
-
     const drawPlacementBoard = () => {
         const zoneDom = document.getElementById("left")
         const board = document.createElement('div');
@@ -147,7 +143,6 @@ export const PlacementBoard = (gameboard, onFinish) => {
         board.appendChild(template);
         renderShip(template,tiles[0].offsetWidth,ship);
         const illegalSquares = findIllegalSquares(ship);
-        TEMPconsoleIllegalTiles(illegalSquares);
         const rotate = createRotateButton();
         rotate.addEventListener('click',() => {
             removeMarker(template);
@@ -276,20 +271,6 @@ export const PlacementBoard = (gameboard, onFinish) => {
         shipBar.innerHTML = '';
     }
 
-    const TEMPconsoleIllegalTiles = (illegal) => {
-        const consoleString = ['']
-        for (let i = 0 ; i < 10 ; i++) {
-            for (let j = 0 ; j < 10 ; j++ ) {
-                if (illegal.includes(`${j}-${i}`)) {
-                    consoleString.push('X');
-                } else {
-                    consoleString.push('O');
-                }
-            }
-            consoleString.push('\n');
-        }
-        console.log(consoleString.join(' '));
-    }
 
     const hoverImage = (element,img) => {
         const event = element.addEventListener('mouseover',(e) => {

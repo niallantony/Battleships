@@ -17,7 +17,7 @@ export const Game = (() => {
         players.push(playerTwo);
         playerOneBoard.opponent = playerTwo;
         playerTwoBoard.opponent = playerOne;
-        startGame(playerOne,playerTwo);
+        startGame();
     }
 
     const doubleInitialise = (name, secondName) => {
@@ -40,8 +40,9 @@ export const Game = (() => {
     }
 
     const turnOver = () => {
-        if(currentPlayer.gameboard.checkForAllSunk()) {
-            Screen.endGame();
+        if(currentPlayer.gameboard.opponent.gameboard.checkForAllSunk()) {
+            Screen.endGame(currentPlayer.id);
+            players.length = 0;
             return;
         }
         nextPlayer();
@@ -53,14 +54,16 @@ export const Game = (() => {
         if (currentPlayer.isComp) {
             Screen.refresh(currentPlayer,previous);
             currentPlayer.makeMove();
-        } else {
+        } else if (!currentPlayer.gameboard.opponent.isComp) {
             Screen.showReadyScreen(currentPlayer,previous);
+        } else {
+            Screen.refresh(currentPlayer,previous);
         }
     }
 
     const shipPlacement = (player, cb) => {
         // const opponentBoard = player === playerOne ? playerTwo.gameboard : playerOne.gameboard;
-        Screen.shipScreenSetup();
+        Screen.shipScreenSetup(player.id);
         const placement = PlacementBoard(player.gameboard, cb);
         placement.renderPlacementScreen();
     }
@@ -72,6 +75,7 @@ export const Game = (() => {
     }
 
     const startGame = () => {
+        Screen.onWin = () => Screen.drawMainMenu(singleInitialise,doubleInitialise);
         const afterPlace = players[1].isComp ? computerPlace : shipPlacement ;
         shipPlacement(players[0], () => afterPlace(players[1], initialiseGame));
     }

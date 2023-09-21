@@ -7,10 +7,12 @@ export const SHIP_IMAGES = {
 
 export default (() => {
     let onNext;
+    let onWin;
     let moveReady = true;
 
     const drawMainMenu = (singleInitialise, doubleInitialise) => {
         const body = document.querySelector('body');
+        body.innerHTML = '';
         const menuPan = document.createElement('div');
         const gameTitle = document.createElement('div');
         gameTitle.classList.add('game-title');
@@ -62,9 +64,23 @@ export default (() => {
         })
     }   
 
-    const shipScreenSetup = () => {
+    const printString = (toPrint) => {
+        const shipBar = document.getElementById('ship-bar');
+        shipBar.textContent = toPrint;
+    }
+
+    const getBattleshipCoords = (coords) => {
+        const xLetter = String.fromCharCode(coords[0]+65);
+        return `${xLetter}${coords[1]+1}`
+    }
+
+    const shipScreenSetup = (name) => {
         const body = document.querySelector('body');
         body.innerHTML = '';
+        const title = document.createElement('div');
+        title.textContent = `${name} place your ships!`;
+        title.classList.add('place-ships-title');
+        body.appendChild(title);
         const left = document.createElement('div');
         left.id = 'left';
         const gamearea = document.createElement('div');
@@ -224,9 +240,12 @@ export default (() => {
         const row = activeZone.children[coords[1]];
         const cell = row.children[coords[0]];
         cell.classList.add('attack');
+        const coordString = getBattleshipCoords(coords);
+        printString(`Computer attacks ${coordString}...`);
         const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
         removeAttackMarker();
-        //get result of attack
+        setTimeout(() => printString(`${coordString} is a ${gameboard.squareStatus(coords[0],coords[1])}!`),500)
+        //get result of attacks
         cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
         const stallNextTurn = await stallComputerMove();
         stallNextTurn();
@@ -237,8 +256,11 @@ export default (() => {
         const row = activeZone.children[coords[1]];
         const cell = row.children[coords[0]];
         cell.classList.add('attack');
+        const coordString = getBattleshipCoords(coords);
+        printString(`${gameboard.opponent.id} attacks ${coordString}...`);
         const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
         removeAttackMarker();
+        setTimeout(() => printString(`${coordString} is a ${gameboard.squareStatus(coords[0],coords[1])}!`),500)
         //get result of attack
         cell.classList.add(gameboard.squareStatus(coords[0],coords[1]));
         const showPlayersTurn = await showPlayerResult();
@@ -246,8 +268,8 @@ export default (() => {
         moveReady = true;
     }
 
-    const sunkShip = (ship) => {
-        console.log(ship.name, ' is a goner')
+    const sunkShip = (ship, name) => {
+        setTimeout(() => printString(`${name}'s ${ship.name} has been sunk!`),2500);
     }
 
     const showPlayerResult = async () => {
@@ -307,8 +329,22 @@ export default (() => {
         return [x,y]
     }
 
-    const endGame = () => {
-        console.log('Game Over')
+    const endGame = (winner) => {
+        console.log('Game Over ', winner, ' is victorious!')
+        const body = document.querySelector('body');
+        body.innerHTML = '';
+        const victoryMenu = document.createElement('div');
+        const victoryText = document.createElement('div');
+        victoryText.textContent = `Game over! ${winner} is victorious!`;
+        const victoryButton = document.createElement('button');
+        victoryButton.textContent = `Main Menu`;
+        victoryMenu.classList.add('victory-menu');
+        victoryText.classList.add('victory-text');
+        victoryButton.classList.add('victory-button');
+        victoryMenu.appendChild(victoryText);
+        victoryMenu.appendChild(victoryButton);
+        body.appendChild(victoryMenu);
+        victoryButton.addEventListener('click', onWin);
     }
 
 
@@ -329,6 +365,9 @@ export default (() => {
         showReadyScreen,
         set onNext(nextTurn) {
             onNext = nextTurn;
+        },
+        set onWin(win) {
+            onWin = win;
         },
     }
 })();
