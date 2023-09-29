@@ -129,7 +129,7 @@ export const PlacementBoard = (gameboard, onFinish) => {
         clearRotateButton();
         const button = document.createElement('button');
         button.classList.add('rotate');
-        button.textContent = 'Rotate';
+        button.textContent = 'ROTATE';
         shipBar.appendChild(button);
         return button;
     }
@@ -259,9 +259,10 @@ export const PlacementBoard = (gameboard, onFinish) => {
     }
 
     const renderSubmitButton = () => {
+        shipBar.innerHTML = '';
         const submitButton = document.createElement('button');
         submitButton.classList.add('submit-placement');
-        submitButton.textContent = 'Submit';
+        submitButton.textContent = 'SUBMIT';
         return submitButton
     }
 

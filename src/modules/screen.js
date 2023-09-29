@@ -14,14 +14,18 @@ export default (() => {
         const body = document.querySelector('body');
         body.innerHTML = '';
         const menuPan = document.createElement('div');
+        menuPan.classList.add('main-menu')
         const gameTitle = document.createElement('div');
         gameTitle.classList.add('game-title');
         gameTitle.textContent = 'Battleships!'
         menuPan.appendChild(gameTitle);
         body.appendChild(menuPan);
         const buttonBar = document.createElement('div');
+        buttonBar.classList.add('button-bar')
         const startSingle = document.createElement('button');
+        startSingle.classList.add('menu-button')
         const startDouble = document.createElement('button');
+        startDouble.classList.add('menu-button')
         buttonBar.appendChild(startSingle);
         buttonBar.appendChild(startDouble);
         menuPan.appendChild(buttonBar);
@@ -53,14 +57,17 @@ export default (() => {
         const nameSubmit = document.createElement('button');
         nameSubmit.textContent = "Submit";
         nameDialog.appendChild(nameForm);
+        nameInput.required = true;
         nameForm.appendChild(nameLabel);
         nameForm.appendChild(nameInput);
         nameForm.appendChild(nameSubmit);
         nameSubmit.classList.add('get-name-submit');
         nameSubmit.addEventListener('click',(e) => {
             e.preventDefault();
-            cb(nameInput.value);
-            nameDialog.parentNode.removeChild(nameDialog);
+            if (nameInput.value != '') {
+                cb(nameInput.value);
+                nameDialog.parentNode.removeChild(nameDialog);
+            }
         })
     }   
 
@@ -340,7 +347,7 @@ export default (() => {
         victoryButton.textContent = `Main Menu`;
         victoryMenu.classList.add('victory-menu');
         victoryText.classList.add('victory-text');
-        victoryButton.classList.add('victory-button');
+        victoryButton.classList.add('menu-button');
         victoryMenu.appendChild(victoryText);
         victoryMenu.appendChild(victoryButton);
         body.appendChild(victoryMenu);

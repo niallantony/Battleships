@@ -4,21 +4,103 @@
     --tile-hit: rgba(255,200,200,0.8);
     --tile-miss: rgba(200,200,255,0.8);
     --tile-hover: rgba(230,200,200,0.4);
+    --background: #558877;
+    --menu-back: #55AA99;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+body {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background);
+}
+
+.get-name::backdrop {
+    background-color: #000;
+}
+
+.get-name form {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+}
+
+.get-name form label {
+    grid-column: 1 / 2;
+    text-align: right;
+}
+
+.get-name-submit {
+    grid-column: 1 / 3;
+}
+
+.main-menu,
+.victory-menu,
+.get-name {
+    width: max(35%,400px);
+    background-color: var(--menu-back);
+    border-radius: 5px;
+    border: 5px solid white;
+    padding: 2rem;
+    color: white;
+}
+
+input {
+    border: 2px dashed white;
+    background-color: var(--menu-back);
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
+    margin: 1rem;
+    grid-column: 2 / 3;
+}
+
+
+.game-title,
+.place-ships-title {
+    color: white;
+    text-align: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 3rem;
+}
+
+.button-bar {
+    display: flex;
+    justify-content: center;
+}
+
+#ship-bar {
+    color: white;
+}
+
+.menu-button,
+.get-name-submit,
+.place-ship,
+.rotate,
+.submit-placement {
+    border: 2px solid white;
+    background-color: var(--menu-back);
+    margin: 1rem;
+    border-radius: 5px;
+    padding: 1rem;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 #gamearea {
     display: flex;
+    border: 2px dashed white;
+    margin: 1rem;
 }
 
 #right {
     position: relative;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
 #left .ship {
@@ -33,6 +115,7 @@ body {
 #right {
     margin: 2rem;
     position:relative;
+    border: 2px solid white;
 }
 
 .tile.miss {
@@ -78,7 +161,8 @@ button.tile:hover {
     padding: 1rem;
     background-color: var(--tile-hit);
     text-align: center;
-    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    color:white;
 }
 
 #player-one,
@@ -90,13 +174,6 @@ button.tile:hover {
     position:absolute;
     background-color: aqua;
 }
-
-/* button {
-    padding: 0;
-    margin: 0;
-    background-color: var(--tile);
-    border: 0;
-} */
 
 button.tile.attack {
     animation: attack-pulse 0.5s infinite;
@@ -112,18 +189,7 @@ button.tile.attack {
     }
 }
 
-.place-ship {
-    background-color: blue;
-    border-radius: 5px;
-    padding: 1rem;
-    color: white;
-}
-
-.place-ship:hover {
-    background-color: #3333FF;
-}
-
-.place-ship:active {
+button:active {
     transform: scale(103%);
 }
 
@@ -143,4 +209,10 @@ button.tile.attack {
 
 .ready-dialog::backdrop {
     background-color: #000000;
+}
+
+@media (max-width: 800px) {
+    #gamearea {
+        flex-direction: column;
+    }
 }
