@@ -40,8 +40,8 @@ export const Game = (() => {
     }
 
     const turnOver = () => {
-        if(currentPlayer.gameboard.opponent.gameboard.checkForAllSunk()) {
-            Screen.endGame(currentPlayer.id);
+        if(currentPlayer.gameboard.opponent.gameboard.checkForAllSunk() || currentPlayer.gameboard.checkForAllSunk()) {
+            Screen.endGame(currentPlayer.gameboard.opponent.id);
             players.length = 0;
             return;
         }

@@ -39,15 +39,27 @@ body {
     grid-column: 1 / 3;
 }
 
+.victory-menu {
+    display: flex;
+    justify-content: center;
+}
+
 .main-menu,
 .victory-menu,
-.get-name {
+.get-name,
+.ready-dialog {
     width: max(35%,400px);
     background-color: var(--menu-back);
     border-radius: 5px;
     border: 5px solid white;
     padding: 2rem;
     color: white;
+}
+
+.ready-dialog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 input {
@@ -63,7 +75,8 @@ input {
 
 
 .game-title,
-.place-ships-title {
+.place-ships-title,
+.ready-text {
     color: white;
     text-align: center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -83,7 +96,8 @@ input {
 .get-name-submit,
 .place-ship,
 .rotate,
-.submit-placement {
+.submit-placement,
+.ready-button {
     border: 2px solid white;
     background-color: var(--menu-back);
     margin: 1rem;

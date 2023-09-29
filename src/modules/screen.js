@@ -264,7 +264,7 @@ export default (() => {
         const cell = row.children[coords[0]];
         cell.classList.add('attack');
         const coordString = getBattleshipCoords(coords);
-        printString(`${gameboard.opponent.id} attacks ${coordString}...`);
+        printString(`${gameboard.opponent.gameboard.opponent.id} attacks ${coordString}...`);
         const removeAttackMarker = await promisify(() => cell.classList.remove('attack'),1000);
         removeAttackMarker();
         setTimeout(() => printString(`${coordString} is a ${gameboard.squareStatus(coords[0],coords[1])}!`),500)
