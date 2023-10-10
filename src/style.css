@@ -159,8 +159,10 @@ input {
     background-color: var(--tile);
 }
 
-button.tile:hover {
-    background-color: var(--tile-hover);
+@media (hover:hover) {
+    button.tile:hover {
+       background-color: var(--tile-hover);
+}
 }
 
 .hidden-board {

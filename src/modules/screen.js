@@ -66,7 +66,7 @@ export default (() => {
             e.preventDefault();
             if (nameInput.value != '') {
                 cb(nameInput.value);
-                nameDialog.parentNode.removeChild(nameDialog);
+                // nameDialog.parentNode.removeChild(nameDialog);
             }
         })
     }   
