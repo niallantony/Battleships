@@ -158,7 +158,7 @@ input {
 .tile {
     background-color: var(--tile);
 }
-
+`
 @media (hover:hover) {
     button.tile:hover {
        background-color: var(--tile-hover);

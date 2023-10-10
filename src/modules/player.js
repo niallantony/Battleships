@@ -31,7 +31,7 @@ export const Player = (id,gameboard) => {
 export const Computer = (id,gameboard) => {
 
     let currentSuccess = [];
-
+``
     const makeShips = () => {
         return {
             carrier: Ship('carrier'),

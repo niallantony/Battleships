@@ -1,4 +1,3 @@
-import { Ship } from "./ship.js";
 import battleshipImage from "../images/battleship.png";
 
 export const SHIP_IMAGES = {
@@ -111,7 +110,7 @@ export default (() => {
         readyButton.textContent = 'Ready';
         readyButton.addEventListener('click', () => {
             readyDialog.parentNode.removeChild(readyDialog);
-            refresh(next,player);
+            refresh(player,next);
         });
         readyDialog.appendChild(readyText)
         readyDialog.appendChild(readyButton)
