@@ -1,5 +1,7 @@
 # Battleships Game
 
+Live link: [Battleships!!](https://niallantony.github.io/Battleships/)
+
 ## A simple battleships browser game, that can be played against a computer or another player.
 
 Built using Javascript, this was an exercise in using Test Driven Development. The core mechanics of the game were designed and coded using entirely Test Driven Development, after which I created a graphical interface and other features, such as a menu for placing tokens, functionality for two-player games and simple computer AI.
